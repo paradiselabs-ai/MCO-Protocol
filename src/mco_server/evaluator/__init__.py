@@ -1,7 +1,8 @@
 """
 Success Criteria Evaluator for MCO Server
 
-This module provides functionality for evaluating success criteria against results.
+This module provides functionality for evaluating success criteria against results,
+preserving the original Percertain DSL structure and progressive revelation approach.
 """
 
 from typing import Dict, Any, List, Optional
@@ -13,6 +14,7 @@ logger = logging.getLogger(__name__)
 class SuccessCriteriaEvaluator:
     """
     Evaluates success criteria against execution results.
+    Preserves the original success criteria structure including developer vision and target audience.
     """
     
     def __init__(self):
@@ -28,6 +30,7 @@ class SuccessCriteriaEvaluator:
     ) -> Dict[str, Any]:
         """
         Evaluate success criteria for a step.
+        Includes developer vision and target audience considerations.
         
         Args:
             step_id: ID of the step
@@ -48,79 +51,18 @@ class SuccessCriteriaEvaluator:
                 "progress": 0.0
             }
         
-        # Find matching criterion
-        criterion = self._find_criterion(success_condition, success_criteria)
-        if not criterion:
-            logger.warning(f"No success criterion found for condition {success_condition}")
-            return {
-                "success": False,
-                "feedback": f"No success criterion found for condition {success_condition}",
-                "progress": 0.0
-            }
+        # Get developer vision and target audience
+        developer_vision = success_criteria.get("developer_vision", "")
+        target_audience = success_criteria.get("target_audience", "")
+        goal = success_criteria.get("goal", "")
         
-        # Evaluate criterion
-        evaluation = self._evaluate_criterion(criterion, result)
+        # Get success criteria items
+        criteria_items = []
+        if "success_criteria" in success_criteria:
+            if isinstance(success_criteria["success_criteria"], list):
+                criteria_items = success_criteria["success_criteria"]
         
-        # Calculate progress
-        total_steps = len(step_config.get("steps", []))
-        current_step = step_config.get("current_step_index", 0) + 1
-        progress = current_step / total_steps if total_steps > 0 else 0.0
-        
-        # Create evaluation result
-        evaluation_result = {
-            "success": evaluation["success"],
-            "feedback": evaluation["feedback"],
-            "progress": progress,
-            "criterion_id": criterion["id"],
-            "details": evaluation.get("details", {})
-        }
-        
-        logger.debug(f"Evaluated step {step_id}: {evaluation_result['success']}")
-        return evaluation_result
-    
-    def _find_criterion(
-        self,
-        criterion_id: str,
-        success_criteria: Dict[str, Any]
-    ) -> Optional[Dict[str, Any]]:
-        """
-        Find a success criterion by ID.
-        
-        Args:
-            criterion_id: ID of the criterion
-            success_criteria: Success criteria configuration
-            
-        Returns:
-            Criterion dictionary or None if not found
-        """
-        if "success_criteria" not in success_criteria:
-            return None
-        
-        for criterion in success_criteria["success_criteria"]:
-            if criterion.get("id") == criterion_id:
-                return criterion
-        
-        return None
-    
-    def _evaluate_criterion(
-        self,
-        criterion: Dict[str, Any],
-        result: Dict[str, Any]
-    ) -> Dict[str, Any]:
-        """
-        Evaluate a success criterion against a result.
-        
-        Args:
-            criterion: Criterion dictionary
-            result: Result dictionary
-            
-        Returns:
-            Evaluation dictionary
-        """
-        # Get evaluation method
-        evaluation_method = criterion.get("evaluation", "")
-        
-        # Check if result meets the criterion
+        # Check if result meets the criteria
         output = result.get("output", "")
         status = result.get("status", "")
         
@@ -128,7 +70,8 @@ class SuccessCriteriaEvaluator:
         if status == "error":
             return {
                 "success": False,
-                "feedback": f"Error: {result.get('error', 'Unknown error')}"
+                "feedback": f"Error: {result.get('error', 'Unknown error')}",
+                "progress": 0.0
             }
         
         # Check for explicit success indicators in output
@@ -146,9 +89,20 @@ class SuccessCriteriaEvaluator:
                 feedback_match = re.search(f"{indicator}(.*?)(?:\n|$)", output, re.DOTALL)
                 feedback = feedback_match.group(1).strip() if feedback_match else "Success detected in output"
                 
+                # Calculate progress
+                total_steps = len(step_config.get("steps", []))
+                current_step = step_config.get("current_step_index", 0) + 1
+                progress = current_step / total_steps if total_steps > 0 else 0.0
+                
                 return {
                     "success": True,
-                    "feedback": feedback
+                    "feedback": feedback,
+                    "progress": progress,
+                    "context": {
+                        "goal": goal,
+                        "target_audience": target_audience,
+                        "developer_vision": developer_vision
+                    }
                 }
         
         # Check for explicit failure indicators
@@ -168,20 +122,54 @@ class SuccessCriteriaEvaluator:
                 
                 return {
                     "success": False,
-                    "feedback": feedback
+                    "feedback": feedback,
+                    "progress": 0.0,
+                    "context": {
+                        "goal": goal,
+                        "target_audience": target_audience,
+                        "developer_vision": developer_vision
+                    }
                 }
         
-        # If no explicit indicators, use evaluation method
-        if evaluation_method:
-            # Check if output contains the evaluation method
-            if evaluation_method.lower() in output.lower():
+        # Check against specific success criteria items
+        if criteria_items:
+            # Count how many criteria items are mentioned in the output
+            criteria_met = 0
+            for criterion in criteria_items:
+                if isinstance(criterion, str) and criterion.lower() in output.lower():
+                    criteria_met += 1
+            
+            # If at least half of the criteria are met, consider it a success
+            if criteria_met >= len(criteria_items) / 2:
+                # Calculate progress
+                total_steps = len(step_config.get("steps", []))
+                current_step = step_config.get("current_step_index", 0) + 1
+                progress = current_step / total_steps if total_steps > 0 else 0.0
+                
                 return {
                     "success": True,
-                    "feedback": f"Success: {evaluation_method}"
+                    "feedback": f"Success: {criteria_met} out of {len(criteria_items)} criteria met",
+                    "progress": progress,
+                    "context": {
+                        "goal": goal,
+                        "target_audience": target_audience,
+                        "developer_vision": developer_vision
+                    }
                 }
         
-        # Default to success if no failure detected
+        # Default to success if no failure detected and no specific criteria to check
+        # Calculate progress
+        total_steps = len(step_config.get("steps", []))
+        current_step = step_config.get("current_step_index", 0) + 1
+        progress = current_step / total_steps if total_steps > 0 else 0.0
+        
         return {
             "success": True,
-            "feedback": "Success: Task completed without explicit failure indicators"
+            "feedback": "Success: Task completed without explicit failure indicators",
+            "progress": progress,
+            "context": {
+                "goal": goal,
+                "target_audience": target_audience,
+                "developer_vision": developer_vision
+            }
         }

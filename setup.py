@@ -4,9 +4,9 @@ setup(
     name="mco-server",
     version="0.1.0",
     description="Model Configuration Orchestration Server - A framework-agnostic orchestration layer for reliable AI agent workflows",
-    author="ParadiseLabs, LLC",
-    author_email="developers@paradiselabs.co",
-    url="https://github.com/paradiselabs-ai/MCO-Protocol",
+    author="MCO Protocol",
+    author_email="info@mco-protocol.org",
+    url="https://github.com/mco-protocol/mco-server",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     install_requires=[
@@ -40,6 +40,4 @@ setup(
             "mco=mco_server.cli:main",
         ],
     },
-    long_description=open("README.md").read(),
-    long_description_content_type="text/markdown",
 )

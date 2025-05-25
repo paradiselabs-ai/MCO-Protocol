@@ -1,7 +1,8 @@
 """
 Configuration Manager for MCO Server
 
-This module provides functionality for loading and managing MCO configuration files.
+This module provides functionality for loading and managing MCO configuration files
+while preserving the original Percertain DSL structure and progressive revelation approach.
 """
 
 from typing import Dict, Any, Optional, List
@@ -14,33 +15,32 @@ logger = logging.getLogger(__name__)
 class ConfigManager:
     """
     Manages MCO configuration files and provides access to configuration data.
+    Preserves the exact Percertain DSL structure and progressive revelation approach.
     """
     
     def __init__(self):
-        """Initialize the configuration manager."""
-        self.app_config = {}
-        self.success_criteria = {}
-        self.features = {}
-        self.styles = {}
+        """Initialize the configuration manager with all file types."""
+        self.core_config = {}  # mco.core
+        self.success_criteria = {}  # mco.sc
+        self.features = {}  # mco.features
+        self.styles = {}  # mco.styles
         self.config_dir = None
     
     def load_from_directory(self, config_dir: str) -> None:
         """
         Load configuration from a directory containing MCO files.
-        
-        Args:
-            config_dir: Directory containing MCO configuration files
+        Preserves the exact file structure and parsing approach.
         """
         if not os.path.isdir(config_dir):
             raise ValueError(f"Configuration directory does not exist: {config_dir}")
         
         self.config_dir = config_dir
         
-        # Load core configuration files
-        self._load_app_config(os.path.join(config_dir, "mco.app"))
+        # Load core configuration files (persistent memory)
+        self._load_core_config(os.path.join(config_dir, "mco.core"))
         self._load_success_criteria(os.path.join(config_dir, "mco.sc"))
         
-        # Load optional configuration files
+        # Load optional configuration files (injected at strategic points)
         features_path = os.path.join(config_dir, "mco.features")
         if os.path.exists(features_path):
             self._load_features(features_path)
@@ -51,14 +51,14 @@ class ConfigManager:
         
         logger.info(f"Loaded configuration from {config_dir}")
     
-    def get_app_config(self) -> Dict[str, Any]:
+    def get_core_config(self) -> Dict[str, Any]:
         """
-        Get the application configuration.
+        Get the core configuration.
         
         Returns:
-            Application configuration dictionary
+            Core configuration dictionary
         """
-        return self.app_config
+        return self.core_config
     
     def get_success_criteria(self) -> Dict[str, Any]:
         """
@@ -89,18 +89,50 @@ class ConfigManager:
     
     def get_workflow_steps(self) -> List[Dict[str, Any]]:
         """
-        Get the workflow steps from the application configuration.
+        Get the workflow steps from the core configuration.
         
         Returns:
             List of workflow step dictionaries
         """
-        if "workflow" not in self.app_config:
+        if "workflow_steps" not in self.core_config:
             return []
         
-        if "steps" not in self.app_config["workflow"]:
-            return []
+        steps = []
+        for step_id, step_data in self.core_config["workflow_steps"].items():
+            step = {
+                "id": step_id,
+                **step_data
+            }
+            steps.append(step)
         
-        return self.app_config["workflow"]["steps"]
+        return steps
+    
+    def get_target_audience(self) -> str:
+        """
+        Get the target audience from the success criteria.
+        
+        Returns:
+            Target audience string
+        """
+        return self.success_criteria.get("target_audience", "")
+    
+    def get_developer_vision(self) -> str:
+        """
+        Get the developer vision from the success criteria.
+        
+        Returns:
+            Developer vision string
+        """
+        return self.success_criteria.get("developer_vision", "")
+    
+    def get_goal(self) -> str:
+        """
+        Get the goal from the success criteria.
+        
+        Returns:
+            Goal string
+        """
+        return self.success_criteria.get("goal", "")
     
     def get_success_criterion(self, criterion_id: str) -> Optional[Dict[str, Any]]:
         """
@@ -121,26 +153,26 @@ class ConfigManager:
         
         return None
     
-    def _load_app_config(self, file_path: str) -> None:
+    def _load_core_config(self, file_path: str) -> None:
         """
-        Load application configuration from a file.
+        Load core configuration from a file.
         
         Args:
-            file_path: Path to the mco.app file
+            file_path: Path to the mco.core file
         """
         if not os.path.exists(file_path):
-            raise ValueError(f"Application configuration file not found: {file_path}")
+            raise ValueError(f"Core configuration file not found: {file_path}")
         
         try:
             with open(file_path, "r") as f:
                 content = f.read()
             
             # Parse MCO format
-            self.app_config = self._parse_mco_format(content)
-            logger.debug(f"Loaded application configuration from {file_path}")
+            self.core_config = self._parse_mco_format(content)
+            logger.debug(f"Loaded core configuration from {file_path}")
             
         except Exception as e:
-            logger.error(f"Error loading application configuration: {e}")
+            logger.error(f"Error loading core configuration: {e}")
             raise
     
     def _load_success_criteria(self, file_path: str) -> None:
@@ -212,33 +244,48 @@ class ConfigManager:
     def _parse_mco_format(self, content: str) -> Dict[str, Any]:
         """
         Parse MCO format content into a dictionary.
-        
-        Args:
-            content: MCO format content
-            
-        Returns:
-            Parsed dictionary
+        Preserves the exact syntax parsing including comments and NLP sections.
         """
         result = {}
         current_section = None
         section_content = []
+        nlp_content = []
+        in_nlp_block = False
         
         for line in content.split("\n"):
-            line = line.strip()
+            line_stripped = line.strip()
             
-            # Skip empty lines and comments
-            if not line or line.startswith("#"):
+            # Skip empty lines and comments (but preserve them in the parsed structure)
+            if not line_stripped or line_stripped.startswith("//"):
+                if current_section:
+                    section_content.append(line)
+                continue
+            
+            # Check for NLP blocks
+            if line_stripped.startswith("> "):
+                in_nlp_block = True
+                nlp_text = line_stripped[2:].strip('"')
+                nlp_content.append(nlp_text)
                 continue
             
             # Check for section start
-            if line.startswith("@"):
+            if line_stripped.startswith("@"):
                 # Save previous section if exists
                 if current_section:
-                    result[current_section] = self._parse_section_content(section_content)
+                    section_data = self._parse_section_content(section_content)
+                    
+                    # Add NLP content if exists
+                    if nlp_content:
+                        section_data["_nlp"] = nlp_content
+                    
+                    result[current_section] = section_data
+                    nlp_content = []
                 
                 # Start new section
-                current_section = line[1:].split(":")[0].strip()
-                section_content = []
+                section_parts = line_stripped[1:].split(":", 1)
+                current_section = section_parts[0].strip()
+                section_content = [line]
+                in_nlp_block = False
                 continue
             
             # Add line to current section
@@ -247,13 +294,20 @@ class ConfigManager:
         
         # Save last section
         if current_section:
-            result[current_section] = self._parse_section_content(section_content)
+            section_data = self._parse_section_content(section_content)
+            
+            # Add NLP content if exists
+            if nlp_content:
+                section_data["_nlp"] = nlp_content
+            
+            result[current_section] = section_data
         
         return result
     
     def _parse_section_content(self, content: List[str]) -> Any:
         """
         Parse section content based on format.
+        Handles structured data, lists, and free text formats.
         
         Args:
             content: List of content lines
@@ -261,24 +315,105 @@ class ConfigManager:
         Returns:
             Parsed content
         """
-        # Join lines and try to parse as JSON
-        joined_content = " ".join(content)
+        # Join all non-comment lines
+        joined_content = ""
+        for line in content:
+            line_stripped = line.strip()
+            if not line_stripped.startswith("//"):
+                joined_content += line + "\n"
         
-        try:
-            # Try to parse as JSON
-            return json.loads(joined_content)
-        except json.JSONDecodeError:
-            # If not valid JSON, parse as key-value pairs
-            result = {}
+        # Try to parse as JSON if it looks like JSON
+        if (joined_content.strip().startswith("{") and joined_content.strip().endswith("}")) or \
+           (joined_content.strip().startswith("[") and joined_content.strip().endswith("]")):
+            try:
+                # Try to parse as JSON
+                return json.loads(joined_content)
+            except json.JSONDecodeError:
+                pass
+        
+        # If not JSON, parse based on content structure
+        result = {}
+        current_key = None
+        current_value = []
+        list_items = []
+        
+        # Check if it's a simple list of items
+        is_list = True
+        for line in content:
+            line_stripped = line.strip()
+            if not line_stripped or line_stripped.startswith("//"):
+                continue
+            if line_stripped.startswith("-"):
+                list_items.append(line_stripped[1:].strip())
+            else:
+                is_list = False
+                break
+        
+        if is_list and list_items:
+            return list_items
+        
+        # Otherwise parse as key-value pairs or structured data
+        for line in content:
+            line_stripped = line.strip()
             
-            for line in content:
-                if ":" in line:
-                    key, value = line.split(":", 1)
-                    result[key.strip()] = value.strip()
+            # Skip comments and empty lines
+            if not line_stripped or line_stripped.startswith("//"):
+                continue
+            
+            # Skip section declaration line
+            if line_stripped.startswith("@"):
+                continue
+            
+            # Check for key-value pair
+            if ":" in line_stripped and not line_stripped.startswith("-"):
+                # Save previous key-value pair if exists
+                if current_key and current_value:
+                    result[current_key] = "\n".join(current_value).strip()
+                    current_value = []
+                
+                # Parse new key-value pair
+                key, value = line_stripped.split(":", 1)
+                current_key = key.strip()
+                value_stripped = value.strip()
+                
+                # Check if value is a nested structure
+                if value_stripped.startswith("{") or value_stripped.startswith("["):
+                    try:
+                        result[current_key] = json.loads(value_stripped)
+                        current_key = None
+                    except json.JSONDecodeError:
+                        current_value.append(value_stripped)
                 else:
-                    # Add as list item if no key-value format
-                    if "items" not in result:
-                        result["items"] = []
-                    result["items"].append(line)
+                    current_value.append(value_stripped)
             
-            return result
+            # Handle list items
+            elif line_stripped.startswith("-"):
+                if "items" not in result:
+                    result["items"] = []
+                result["items"].append(line_stripped[1:].strip())
+            
+            # Add to current value if in a key-value pair
+            elif current_key:
+                current_value.append(line_stripped)
+            
+            # Add as raw text if not in a key-value pair
+            else:
+                if "text" not in result:
+                    result["text"] = []
+                result["text"].append(line_stripped)
+        
+        # Save last key-value pair if exists
+        if current_key and current_value:
+            result[current_key] = "\n".join(current_value).strip()
+        
+        # If result is empty or only has text, return the raw content
+        if not result or (len(result) == 1 and "text" in result):
+            # Join all non-comment, non-section lines
+            raw_content = []
+            for line in content:
+                line_stripped = line.strip()
+                if not line_stripped.startswith("//") and not line_stripped.startswith("@"):
+                    raw_content.append(line)
+            return "\n".join(raw_content).strip()
+        
+        return result

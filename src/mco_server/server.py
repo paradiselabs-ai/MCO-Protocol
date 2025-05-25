@@ -1,15 +1,13 @@
 """
 Main MCO Server module
 
-Provides the core MCO Server class that coordinates configuration, state management,
-orchestration, and framework adapters.
+Provides the core server functionality for MCO Server,
+preserving the original Percertain DSL structure and progressive revelation approach.
 """
 
-from typing import Dict, Any, Optional, List, Union
-import os
-import uuid
+from typing import Dict, Any, Optional
 import logging
-
+import os
 from .config import ConfigManager
 from .state import StateManager
 from .orchestrator import Orchestrator
@@ -21,75 +19,42 @@ logger = logging.getLogger(__name__)
 
 class MCOServer:
     """
-    Main MCO Server class that coordinates all components of the orchestration system.
+    Main MCO Server class.
     
-    This class serves as the primary entry point for using MCO Server, handling the
-    initialization of all components and providing methods for starting and managing
-    orchestrations.
+    Coordinates all components and provides the main interface for MCO Server,
+    preserving the original Percertain DSL structure and progressive revelation approach.
     """
     
-    def __init__(
-        self,
-        config_dir: Optional[str] = None,
-        adapters: Optional[List[BaseAdapter]] = None,
-        state_persistence: str = "memory",
-        auto_detect: bool = False
-    ):
+    def __init__(self, state_dir: Optional[str] = None):
         """
         Initialize the MCO Server.
         
         Args:
-            config_dir: Optional directory containing MCO configuration files
-            adapters: Optional list of adapter instances to register
-            state_persistence: Type of state persistence ("memory", "file", "redis")
-            auto_detect: Whether to auto-detect available frameworks
+            state_dir: Directory for storing state files (optional)
         """
+        # Initialize components
         self.config_manager = ConfigManager()
-        self.state_manager = StateManager(persistence_type=state_persistence)
+        self.state_manager = StateManager(state_dir)
         self.evaluator = SuccessCriteriaEvaluator()
         self.orchestrator = Orchestrator(
-            config_manager=self.config_manager,
-            state_manager=self.state_manager,
-            evaluator=self.evaluator
+            self.config_manager,
+            self.state_manager,
+            self.evaluator
+        )
+        self.api_gateway = APIGateway(
+            self.config_manager,
+            self.state_manager,
+            self.orchestrator
         )
         
-        # Initialize adapter registry
+        # Initialize adapters registry
         self.adapters = {}
         
-        # Register provided adapters
-        if adapters:
-            for adapter in adapters:
-                self.register_adapter(adapter.get_name(), adapter)
-        
-        # Auto-detect frameworks if requested
-        if auto_detect:
-            self._auto_detect_frameworks()
-        
-        # Load configuration if provided
-        if config_dir:
-            self.load_configuration(config_dir)
-        
-        # Initialize API gateway
-        self.api_gateway = APIGateway(self)
-        
-        logger.info("MCO Server initialized")
-    
-    def load_configuration(self, config_dir: str) -> None:
-        """
-        Load MCO configuration from a directory.
-        
-        Args:
-            config_dir: Directory containing MCO configuration files
-        """
-        if not os.path.isdir(config_dir):
-            raise ValueError(f"Configuration directory does not exist: {config_dir}")
-        
-        self.config_manager.load_from_directory(config_dir)
-        logger.info(f"Loaded configuration from {config_dir}")
+        logger.info("Initialized MCO Server")
     
     def register_adapter(self, name: str, adapter: BaseAdapter) -> None:
         """
-        Register a framework adapter.
+        Register an adapter.
         
         Args:
             name: Name of the adapter
@@ -100,8 +65,8 @@ class MCOServer:
     
     def start_orchestration(
         self,
-        config_dir: Optional[str] = None,
-        adapter_name: str = "default",
+        config_dir: str,
+        adapter_name: str,
         adapter_config: Optional[Dict[str, Any]] = None,
         initial_state: Optional[Dict[str, Any]] = None
     ) -> str:
@@ -111,34 +76,36 @@ class MCOServer:
         Args:
             config_dir: Directory containing MCO configuration files
             adapter_name: Name of the adapter to use
-            adapter_config: Configuration for the adapter
-            initial_state: Initial state for the orchestration
+            adapter_config: Adapter configuration (optional)
+            initial_state: Initial state variables (optional)
             
         Returns:
             Orchestration ID
         """
-        # Load configuration if provided
-        if config_dir:
-            self.load_configuration(config_dir)
+        # Load configuration
+        self.config_manager.load_from_directory(config_dir)
         
         # Get adapter
-        adapter = self._get_adapter(adapter_name)
+        adapter = self.adapters.get(adapter_name)
+        if not adapter:
+            adapter = get_adapter_by_name(adapter_name)
+            if not adapter:
+                raise ValueError(f"Adapter not found: {adapter_name}")
         
         # Initialize adapter
-        if adapter_config:
-            adapter.initialize(adapter_config)
+        adapter.initialize(adapter_config or {})
         
         # Generate orchestration ID
+        import uuid
         orchestration_id = str(uuid.uuid4())
         
         # Initialize state
-        if initial_state:
-            self.state_manager.initialize_state(orchestration_id, initial_state)
+        self.state_manager.initialize_state(orchestration_id, initial_state or {})
         
         # Start orchestration
         self.orchestrator.start_orchestration(orchestration_id, adapter)
         
-        logger.info(f"Started orchestration: {orchestration_id}")
+        logger.info(f"Started orchestration {orchestration_id}")
         return orchestration_id
     
     def get_next_directive(self, orchestration_id: str) -> Dict[str, Any]:
@@ -178,7 +145,7 @@ class MCOServer:
         """
         return self.orchestrator.process_result(orchestration_id, result)
     
-    def get_orchestration_status(self, orchestration_id: str) -> Dict[str, Any]:
+    def get_status(self, orchestration_id: str) -> Dict[str, Any]:
         """
         Get the status of an orchestration.
         
@@ -198,42 +165,4 @@ class MCOServer:
             host: Host to bind to
             port: Port to bind to
         """
-        self.api_gateway.start_server(host, port)
-        logger.info(f"API server started on {host}:{port}")
-    
-    def _get_adapter(self, adapter_name: str) -> BaseAdapter:
-        """
-        Get an adapter by name.
-        
-        Args:
-            adapter_name: Name of the adapter
-            
-        Returns:
-            Adapter instance
-        """
-        if adapter_name in self.adapters:
-            return self.adapters[adapter_name]
-        
-        # Try to load adapter dynamically
-        adapter = get_adapter_by_name(adapter_name)
-        if adapter:
-            self.register_adapter(adapter_name, adapter)
-            return adapter
-        
-        raise ValueError(f"Adapter not found: {adapter_name}")
-    
-    def _auto_detect_frameworks(self) -> None:
-        """
-        Auto-detect available frameworks and register adapters.
-        """
-        # Try to import and register common frameworks
-        frameworks_to_try = ["lmstudio", "agentgpt", "superexpert"]
-        
-        for framework in frameworks_to_try:
-            try:
-                adapter = get_adapter_by_name(framework)
-                if adapter:
-                    self.register_adapter(framework, adapter)
-                    logger.info(f"Auto-detected framework: {framework}")
-            except Exception as e:
-                logger.debug(f"Could not auto-detect framework {framework}: {e}")
+        self.api_gateway.start(host, port)

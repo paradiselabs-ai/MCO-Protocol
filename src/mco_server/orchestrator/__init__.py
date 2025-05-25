@@ -1,7 +1,8 @@
 """
 Orchestrator for MCO Server
 
-This module provides the core orchestration functionality for MCO Server.
+This module provides the core orchestration functionality for MCO Server,
+preserving the original Percertain DSL structure and progressive revelation approach.
 """
 
 from typing import Dict, Any, Optional, List
@@ -16,6 +17,7 @@ logger = logging.getLogger(__name__)
 class Orchestrator:
     """
     Orchestrates the execution of workflows based on MCO configuration.
+    Preserves the progressive revelation structure and handles persistent vs. injected components.
     """
     
     def __init__(
@@ -24,14 +26,7 @@ class Orchestrator:
         state_manager: StateManager,
         evaluator: SuccessCriteriaEvaluator
     ):
-        """
-        Initialize the orchestrator.
-        
-        Args:
-            config_manager: Configuration manager instance
-            state_manager: State manager instance
-            evaluator: Success criteria evaluator instance
-        """
+        """Initialize the orchestrator with all necessary components."""
         self.config_manager = config_manager
         self.state_manager = state_manager
         self.evaluator = evaluator
@@ -61,12 +56,7 @@ class Orchestrator:
     def get_next_directive(self, orchestration_id: str) -> Dict[str, Any]:
         """
         Get the next directive for an orchestration.
-        
-        Args:
-            orchestration_id: ID of the orchestration
-            
-        Returns:
-            Directive dictionary
+        Implements the progressive revelation structure.
         """
         # Get current state
         state = self.state_manager.get_state(orchestration_id)
@@ -92,18 +82,43 @@ class Orchestrator:
         # Get current step
         current_step = steps[current_step_index]
         
-        # Create directive
+        # Create directive with persistent context (core + sc)
         directive = {
             "type": "execute",
             "step_id": current_step.get("id", f"step_{current_step_index}"),
             "instruction": self._substitute_variables(
-                current_step.get("instruction", ""),
+                current_step.get("task", ""),
                 state.get("variables", {})
             ),
-            "guidance": self._get_guidance_for_step(current_step),
             "step_index": current_step_index,
-            "total_steps": len(steps)
+            "total_steps": len(steps),
+            
+            # Add persistent context
+            "persistent_context": {
+                "core": self.config_manager.get_core_config(),
+                "success_criteria": self.config_manager.get_success_criteria(),
+                "goal": self.config_manager.get_goal(),
+                "target_audience": self.config_manager.get_target_audience(),
+                "developer_vision": self.config_manager.get_developer_vision()
+            }
         }
+        
+        # Add strategic injections based on step type
+        step_type = current_step.get("type", "default")
+        
+        if step_type == "feature_implementation":
+            # Inject features for this step
+            directive["injected_context"] = {
+                "features": self.config_manager.get_features()
+            }
+        elif step_type == "styling":
+            # Inject styles for this step
+            directive["injected_context"] = {
+                "styles": self.config_manager.get_styles()
+            }
+        
+        # Add guidance based on success criteria and target audience
+        directive["guidance"] = self._get_guidance_for_step(current_step)
         
         # Store current directive
         self.current_directives[orchestration_id] = directive
@@ -224,9 +239,7 @@ class Orchestrator:
             "current_step_index": state.get("current_step_index", 0),
             "completed_steps": state.get("completed_steps", []),
             "total_steps": total_steps,
-            "progress": progress,
-            "state_manager": self.state_manager,
-            "config_manager": self.config_manager
+            "progress": progress
         }
         
         return status
@@ -257,7 +270,8 @@ class Orchestrator:
         # Create step config for evaluator
         step_config = {
             "steps": steps,
-            "current_step_index": directive["step_index"]
+            "current_step_index": directive["step_index"],
+            "success_condition": directive["step_id"]  # Use step_id as success condition
         }
         
         # Evaluate result
@@ -272,7 +286,7 @@ class Orchestrator:
     
     def _get_guidance_for_step(self, step: Dict[str, Any]) -> str:
         """
-        Get guidance for a step based on success criteria.
+        Get guidance for a step based on success criteria, target audience, and developer vision.
         
         Args:
             step: Step dictionary
@@ -281,31 +295,39 @@ class Orchestrator:
             Guidance string
         """
         # Get success condition
-        success_condition = step.get("success_condition")
+        success_condition = step.get("id")
         if not success_condition:
             return ""
         
         # Get success criteria
         success_criteria = self.config_manager.get_success_criteria()
         
-        # Find matching criterion
-        criterion = None
-        if "success_criteria" in success_criteria:
-            for c in success_criteria["success_criteria"]:
-                if c.get("id") == success_condition:
-                    criterion = c
-                    break
-        
-        if not criterion:
-            return ""
+        # Get target audience and developer vision
+        target_audience = self.config_manager.get_target_audience()
+        developer_vision = self.config_manager.get_developer_vision()
+        goal = self.config_manager.get_goal()
         
         # Create guidance
-        guidance = f"You need to focus on: {criterion.get('description', '')}"
+        guidance = []
         
-        if "evaluation" in criterion:
-            guidance += f". Specifically, ensure that {criterion['evaluation']}"
+        if goal:
+            guidance.append(f"Goal: {goal}")
         
-        return guidance
+        if target_audience:
+            guidance.append(f"Target Audience: {target_audience}")
+        
+        if developer_vision:
+            guidance.append(f"Developer Vision: {developer_vision}")
+        
+        # Add specific success criteria
+        if "success_criteria" in success_criteria:
+            criteria_items = success_criteria["success_criteria"]
+            if isinstance(criteria_items, list):
+                guidance.append("Success Criteria:")
+                for item in criteria_items:
+                    guidance.append(f"- {item}")
+        
+        return "\n\n".join(guidance)
     
     def _substitute_variables(self, text: str, variables: Dict[str, Any]) -> str:
         """
@@ -323,9 +345,9 @@ class Orchestrator:
         
         result = text
         
-        # Replace {{{variable}}} placeholders
+        # Replace {variable} placeholders
         for name, value in variables.items():
-            placeholder = f"{{{{{{{name}}}}}}}"
+            placeholder = f"{{{name}}}"
             if isinstance(value, (list, dict)):
                 # Convert complex types to string representation
                 str_value = str(value)

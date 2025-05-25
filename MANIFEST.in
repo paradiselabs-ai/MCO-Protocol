@@ -1,8 +1,0 @@
-include LICENSE
-include README.md
-include CONTRIBUTING.md
-include CODE_OF_CONDUCT.md
-recursive-include docs *
-recursive-include examples *
-recursive-include assets *
-global-exclude *.py[cod] __pycache__ *.so .DS_Store

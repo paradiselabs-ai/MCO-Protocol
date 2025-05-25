@@ -1,0 +1,20 @@
+// --- mco.features --- 
+
+@optional
+  interactive_mode:
+    description: "Allow the workflow to ask clarifying questions when needed."
+    > "The researcher agent should be able to ask for more specific information when the topic is too broad."
+  
+  visualization:
+    description: "Generate visualizations of key concepts and relationships."
+    > "Could include a concept map or timeline of AI development."
+  
+  multi_format:
+    description: "Provide the summary in multiple formats (academic, blog post, presentation)."
+    > "Each format should be tailored to its typical audience while maintaining factual accuracy."
+
+@brainstorm
+  - "Could we incorporate a fact-checking step before finalizing the summary?"
+  - "What about adding a comparison with competing technologies or approaches?"
+  - "Is there a way to personalize the summary based on the reader's background?"
+  - "Could we add an interactive Q&A component based on the research?"

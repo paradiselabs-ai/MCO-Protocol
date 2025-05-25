@@ -1,7 +1,8 @@
 """
 Framework Adapter Base and Registry
 
-This module provides the base adapter class and adapter registry functionality.
+This module provides the base adapter class and adapter registry functionality,
+preserving the original Percertain DSL structure and progressive revelation approach.
 """
 
 from typing import Dict, Any, Optional, Type, Callable
@@ -15,6 +16,7 @@ class BaseAdapter:
     Base class for framework adapters.
     
     All framework adapters must inherit from this class and implement its methods.
+    Designed to support the progressive revelation structure and persistent/injected components.
     """
     
     def __init__(self):
@@ -34,8 +36,29 @@ class BaseAdapter:
         """
         Execute an orchestration directive.
         
+        The directive contains both persistent context (core + sc) and potentially
+        injected context (features or styles) based on the current step.
+        
         Args:
-            directive: Directive dictionary
+            directive: Directive dictionary with the following structure:
+                {
+                    "type": "execute",
+                    "step_id": "step_id",
+                    "instruction": "Task instruction",
+                    "step_index": 0,
+                    "total_steps": 3,
+                    "persistent_context": {
+                        "core": {...},  # mco.core content
+                        "success_criteria": {...},  # mco.sc content
+                        "goal": "...",
+                        "target_audience": "...",
+                        "developer_vision": "..."
+                    },
+                    "injected_context": {  # Optional, only present for certain steps
+                        "features": {...}  # or "styles": {...}
+                    },
+                    "guidance": "..."
+                }
             
         Returns:
             Result dictionary
