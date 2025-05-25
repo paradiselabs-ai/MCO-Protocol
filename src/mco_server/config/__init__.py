@@ -1,5 +1,5 @@
 """
-Configuration Manager for MCO Server
+Fixed Configuration Manager for MCO Server
 
 This module provides functionality for loading and managing MCO configuration files
 while preserving the original Percertain DSL structure and progressive revelation approach.
@@ -97,8 +97,23 @@ class ConfigManager:
         if "workflow_steps" not in self.core_config:
             return []
         
+        # Fix: Ensure workflow_steps is a dictionary before processing
+        workflow_steps = self.core_config["workflow_steps"]
+        if isinstance(workflow_steps, str):
+            logger.warning("workflow_steps is a string, not a mapping. Returning empty list.")
+            return []
+        
+        if not isinstance(workflow_steps, dict):
+            logger.warning(f"workflow_steps is not a dictionary: {type(workflow_steps)}. Returning empty list.")
+            return []
+        
         steps = []
-        for step_id, step_data in self.core_config["workflow_steps"].items():
+        for step_id, step_data in workflow_steps.items():
+            # Ensure step_data is a dictionary
+            if not isinstance(step_data, dict):
+                logger.warning(f"Step data for {step_id} is not a dictionary: {type(step_data)}. Skipping.")
+                continue
+                
             step = {
                 "id": step_id,
                 **step_data
@@ -331,6 +346,10 @@ class ConfigManager:
             except json.JSONDecodeError:
                 pass
         
+        # Fix: Special handling for workflow_steps and other structured sections
+        if any(line.strip().startswith("@workflow_steps") for line in content):
+            return self._parse_structured_section(content)
+        
         # If not JSON, parse based on content structure
         result = {}
         current_key = None
@@ -415,5 +434,73 @@ class ConfigManager:
                 if not line_stripped.startswith("//") and not line_stripped.startswith("@"):
                     raw_content.append(line)
             return "\n".join(raw_content).strip()
+        
+        return result
+    
+    def _parse_structured_section(self, content: List[str]) -> Dict[str, Any]:
+        """
+        Parse structured sections like workflow_steps with nested indentation.
+        
+        Args:
+            content: List of content lines
+            
+        Returns:
+            Parsed dictionary structure
+        """
+        result = {}
+        current_top_key = None
+        current_sub_key = None
+        current_sub_data = {}
+        
+        # Skip the section header line
+        start_idx = 0
+        for i, line in enumerate(content):
+            if line.strip().startswith("@"):
+                start_idx = i + 1
+                break
+        
+        # Process the structured content
+        for line in content[start_idx:]:
+            line_stripped = line.strip()
+            
+            # Skip comments and empty lines
+            if not line_stripped or line_stripped.startswith("//"):
+                continue
+            
+            # Check indentation level
+            indent_level = len(line) - len(line.lstrip())
+            
+            # Top-level key (e.g., step name)
+            if indent_level == 2 and ":" in line_stripped:
+                # Save previous sub-section if exists
+                if current_top_key and current_sub_key:
+                    if current_top_key not in result:
+                        result[current_top_key] = {}
+                    result[current_top_key][current_sub_key] = current_sub_data
+                    current_sub_data = {}
+                
+                # Start new top-level section
+                current_top_key = line_stripped.split(":", 1)[0].strip()
+                current_sub_key = None
+            
+            # Sub-level key (e.g., step properties)
+            elif indent_level == 4 and ":" in line_stripped:
+                key, value = line_stripped.split(":", 1)
+                key = key.strip()
+                value = value.strip()
+                
+                # If this is a new sub-section
+                if not current_sub_key:
+                    current_sub_key = current_top_key
+                    current_sub_data = {}
+                
+                # Add property to current sub-section
+                current_sub_data[key] = value
+        
+        # Save the last sub-section
+        if current_top_key and current_sub_key:
+            if current_top_key not in result:
+                result[current_top_key] = {}
+            result[current_top_key][current_sub_key] = current_sub_data
         
         return result

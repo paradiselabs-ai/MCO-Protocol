@@ -61,7 +61,7 @@ class StateManager:
         
         logger.debug(f"Initialized state for orchestration {orchestration_id}")
     
-    def get_state(self, orchestration_id: str) -> Optional[Dict[str, Any]]:
+    def get_state(self, orchestration_id: str) -> Dict[str, Any]:
         """
         Get state for an orchestration.
         
@@ -69,7 +69,7 @@ class StateManager:
             orchestration_id: ID of the orchestration
             
         Returns:
-            State dictionary or None if not found
+            State dictionary, or an empty default state if not found
         """
         # Check if state is in memory
         if orchestration_id in self.states:
@@ -90,7 +90,21 @@ class StateManager:
                 except Exception as e:
                     logger.error(f"Error loading state for orchestration {orchestration_id}: {e}")
         
-        return None
+        # Return a default empty state instead of None
+        logger.warning(f"No state found for orchestration {orchestration_id}, returning default empty state")
+        default_state = {
+            "orchestration_id": orchestration_id,
+            "status": "unknown",
+            "current_step_index": 0,
+            "completed_steps": [],
+            "variables": {},
+            "created_at": time.time(),
+            "updated_at": time.time()
+        }
+        
+        # Store the default state so we don't create a new one each time
+        self.states[orchestration_id] = default_state
+        return default_state
     
     def update_state(self, orchestration_id: str, updates: Dict[str, Any]) -> None:
         """
@@ -102,8 +116,6 @@ class StateManager:
         """
         # Get current state
         state = self.get_state(orchestration_id)
-        if not state:
-            raise ValueError(f"No state found for orchestration {orchestration_id}")
         
         # Apply updates
         for key, value in updates.items():
@@ -128,8 +140,6 @@ class StateManager:
         """
         # Get current state
         state = self.get_state(orchestration_id)
-        if not state:
-            raise ValueError(f"No state found for orchestration {orchestration_id}")
         
         # Add step to completed steps if not already there
         if step_id not in state.get("completed_steps", []):
@@ -154,8 +164,6 @@ class StateManager:
         """
         # Get current state
         state = self.get_state(orchestration_id)
-        if not state:
-            raise ValueError(f"No state found for orchestration {orchestration_id}")
         
         # Set current step index
         state["current_step_index"] = step_index

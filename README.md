@@ -1,31 +1,17 @@
 # MCO Server
 
+[![CI](https://github.com/paradiselabs-ai/mco-server/actions/workflows/ci.yml/badge.svg)](https://github.com/paradiselabs-ai/mco-server/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/downloads/)
-[![GitHub Stars](https://img.shields.io/github/stars/mco-protocol/mco-server?style=social)](https://github.com/mco-protocol/mco-server)
 
-<p align="center">
-  <img src="assets/mco_logo.png" alt="MCO Server Logo" width="300"/>
-</p>
+Model Configuration Orchestration (MCO) Server is a lightweight orchestration layer that makes AI agents dramatically more reliable by maintaining core requirements in persistent memory while strategically introducing implementation details at the right moments.
 
-<p align="center">
-  <b>Model Configuration Orchestration Server</b><br>
-  A framework-agnostic orchestration layer for reliable AI agent workflows
-</p>
+## Features
 
-## Overview
-
-MCO Server is an open-source orchestration system that guides AI agents through complex workflows while maintaining explicit success criteria. It provides a standardized way to orchestrate AI agents across different frameworks, ensuring reliable, high-quality outputs.
-
-Unlike traditional "vibe coding" approaches where AI agents operate without clear guidance, MCO Server provides structured orchestration with explicit success criteria evaluation, dramatically improving reliability and output quality.
-
-## Key Features
-
-- **Framework Agnosticism**: Works with any AI agent framework through adapters
-- **Success-Driven Design**: Built around explicit success criteria evaluation
-- **Server-Based Architecture**: Centralized orchestration with distributed execution
-- **Persistent State**: Maintains workflow state across interactions
-- **Flexible Integration**: Multiple integration patterns for any use case
+- **Framework Agnostic**: Works with LM Studio, AgentGPT, SuperExpert, and more
+- **Syntactical Natural Language Programming (SNLP)**: Combines structured syntax with natural language for reliable agent guidance
+- **Progressive Revelation**: Strategically introduces features and styles at the right moments in the workflow
+- **Success Criteria Tracking**: Explicitly evaluates progress against defined success criteria
+- **Persistent Memory**: Maintains core requirements throughout the entire process
 
 ## Quick Start
 
@@ -40,58 +26,67 @@ pip install mco-server
 ```python
 from mco_server import MCOServer
 
-# Initialize server
+# Initialize MCO Server
 server = MCOServer()
 
-# Start orchestration
+# Start orchestration with LM Studio adapter
 orchestration_id = server.start_orchestration(
-    config_dir="./my_project/mco",
-    adapter_name="lmstudio"
+    config_dir="./examples/research_assistant/",
+    adapter_name="lmstudio",
+    adapter_config={"model_name": "your-preferred-model"}
 )
 
-# Run orchestration loop
+# Get the first directive
+directive = server.get_next_directive(orchestration_id)
+
+# Execute the directive
+result = server.execute_directive(orchestration_id)
+
+# Process the result
+evaluation = server.process_result(orchestration_id, result)
+
+# Continue orchestration until complete
 while True:
-    # Get next directive
     directive = server.get_next_directive(orchestration_id)
     
     if directive["type"] == "complete":
         print("Orchestration complete!")
         break
     
-    print(f"\n--- Step: {directive['step_id']} ---")
-    print(f"Instruction: {directive['instruction']}")
-    
-    # Execute directive
     result = server.execute_directive(orchestration_id)
+    evaluation = server.process_result(orchestration_id, result)
     
-    # Print evaluation
-    evaluation = result["evaluation"]
+    print(f"Step {directive['step_index'] + 1}/{directive['total_steps']} completed")
     print(f"Success: {evaluation['success']}")
-    print(f"Feedback: {evaluation['feedback']}")
-    print(f"Progress: {evaluation['progress'] * 100:.0f}%")
 ```
 
 ## Documentation
 
-- [Getting Started](docs/getting-started.md)
-- [Configuration Files](docs/configuration.md)
-- [Framework Adapters](docs/adapters.md)
-- [API Reference](docs/api-reference.md)
-- [Examples](docs/examples.md)
+For detailed documentation, see the [docs](./docs) directory:
 
-## Supported Frameworks
+- [Integration Examples](./docs/integration_examples.md)
+- [File Types](./docs/file_types.md)
+- [Visual Setup Tool Design](./docs/visual_setup_tool_design.md)
 
-MCO Server currently supports the following frameworks through adapters:
+## Examples
 
-- [LM Studio Python SDK](https://lmstudio.ai)
-- [AgentGPT](https://agentgpt.reworkd.ai)
-- [SuperExpert](https://superexpert.ai)
-- Custom frameworks (via adapter API)
+The [examples](./examples) directory contains sample MCO configurations for various use cases:
+
+- [Research Assistant](./examples/research_assistant/)
+- [Product Development](./examples/product_development/)
+- [Code Generation](./examples/code_generation/)
 
 ## Contributing
 
-We welcome contributions to MCO Server! Please see our [Contributing Guide](CONTRIBUTING.md) for more information.
+Contributions are welcome! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
 
 ## License
 
-MCO Server is licensed under the [MIT License](LICENSE).
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+
+## Contact
+
+- Website: [https://paradiselabs.co](https://paradiselabs.co)
+- Email: developers@paradiselabs.co
+- Twitter: [@paradiselabs_ai](https://twitter.com/paradiselabs_ai)
+- Discord: [https://discord.gg/uQ69vc4Agc](https://discord.gg/uQ69vc4Agc)
