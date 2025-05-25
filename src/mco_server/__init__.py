@@ -12,6 +12,8 @@ import logging
 import os
 import json
 import uuid
+__version__ = "0.1.0"
+
 from .config import ConfigManager
 from .state import StateManager
 from .orchestrator import Orchestrator

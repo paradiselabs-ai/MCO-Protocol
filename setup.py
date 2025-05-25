@@ -1,12 +1,19 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="mco-server",
+    name="mco-protocol",
     version="0.1.0",
     description="Model Configuration Orchestration (MCO) Server",
+    long_description=open("README.md", "r", encoding="utf-8").read(),
+    long_description_content_type="text/markdown",
     author="ParadiseLabs, LLC",
     author_email="developers@paradiselabs.co",
-    url="https://github.com/paradiselabs-ai/mco-server",
+    url="https://github.com/paradiselabs-ai/MCO-Protocol",
+    project_urls={
+        "Bug Tracker": "https://github.com/paradiselabs-ai/MCO-Protocol/issues",
+        "Documentation": "https://github.com/paradiselabs-ai/MCO-Protocol/blob/main/docs/documentation.md",
+        "Source Code": "https://github.com/paradiselabs-ai/MCO-Protocol",
+    },
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     install_requires=[

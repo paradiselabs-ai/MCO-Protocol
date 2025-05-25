@@ -21,6 +21,10 @@ jobs:
         pip install pytest pytest-cov
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         pip install -e .
+    - name: Create test directories
+      run: |
+        mkdir -p ./examples/research_assistant
+        cp -r ./examples/research_assistant/* ./examples/research_assistant/ || true
     - name: Test with pytest
       run: |
-        pytest tests/ --cov=mco_server
+        pytest tests/ -v
