@@ -2,7 +2,7 @@
 
 ## File Types and Progressive Structure
 
-The MCO Server implements the original Percertain DSL structure with a multi-file approach that supports progressive revelation and a clear separation of concerns. This document explains each file type, its purpose, and how they work together in the orchestration process.
+The MCO Server implements a multi-file approach to AI Agent orchestration that supports progressive revelation and a clear separation of concerns. This document explains each file type, its purpose, and how they work together in the orchestration process.
 
 ## Core File Types
 
@@ -179,7 +179,7 @@ The `mco.styles` file is injected at strategic points in the workflow, typically
 
 ## How They Work Together
 
-The MCO Server implements a sophisticated orchestration mechanism that leverages these file types in a way that mirrors the original Percertain DSL design:
+The MCO Server implements a sophisticated orchestration mechanism that leverages these file types in a way that allows for reliable AI Agent orchestration:
 
 1. **Persistent Memory:**
    - `mco.core` and `mco.sc` are loaded into persistent memory at the start of orchestration
