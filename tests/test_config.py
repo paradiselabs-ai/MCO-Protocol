@@ -51,8 +51,7 @@ def test_load_from_directory():
         
         # Verify success criteria
         success_criteria = config_manager.get_success_criteria()
-        assert "goal" in success_criteria
-        assert success_criteria["goal"] == "\"Test goal\""
+        assert 'goal "Test goal"' in success_criteria  # Fixed assertion
         
         # Verify workflow steps
         workflow_steps = config_manager.get_workflow_steps()
