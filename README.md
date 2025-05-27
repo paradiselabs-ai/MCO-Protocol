@@ -1,7 +1,11 @@
-# MCO Server
+<p align="center">
+<img src="https://img.shields.io/badge/License-MIT-blue.svg" href="https://opensource.org/licenses/MIT" alt="License"/>
+</p>
+<p align="center">
+  <img src="assets/MCO-logo.jpeg" alt="MCO Logo" width="600" height="600"/>
+</p>
 
-[![CI](https://github.com/paradiselabs-ai/mco-server/actions/workflows/ci.yml/badge.svg)](https://github.com/paradiselabs-ai/mco-server/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+# MCO Protocol
 
 Model Configuration Orchestration (MCO) Server is a lightweight orchestration layer that makes AI agents dramatically more reliable by maintaining core requirements in persistent memory while strategically introducing implementation details at the right moments.
 
