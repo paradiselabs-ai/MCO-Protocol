@@ -179,7 +179,10 @@ The `mco.styles` file is injected at strategic points in the workflow, typically
 
 ## How They Work Together
 
-The MCO Server implements a sophisticated orchestration mechanism that leverages these file types in a way that mirrors the original Percertain DSL design:
+The MCO Server implements a sophisticated orchestration mechanism that leverages these file types in a way that gives the agent(s) persistent context 
+of core features and the developers defined criteria for success, while strategically injecting the less vital features and styling, into the system prompt and agent roles and by acting as a new prompt being given, and starts repeatedly looping through them at strategic times.
+Because of the structure of the SNLP syntax, using "progressive revelation", each MCO file starts at the top with the most foundational and basic core functionality or whatever it is you are orchestrating the agents to develop, and as the file is read, each new section builds on top of the one previous, meaning ideally, a @definition that is 4th from the top should only be understood as a task or instruction because it continues from the 3rd above it, and continue through referential and iterative development. 
+Each new @data value gives the agent more insight and context into the user's application or project that is being developed. This progressive iteration of information, with the repetative prompt injection the MCO server implements, allows the agents to develop *not* by giving the entire specs of the project to the agents through a long, well structured prompt, or a .agentrules type of file used by many different coding agnets in many IDE's (i.e. Cline (Claude Dev) using a .clinerules file in the root directory), but allowing the agent to loop through the specs, structured so that it builds iteratively from the bottom up, ensuring that nothing gets forgotten, or overlooked, reducing hallucinations, not having to remember a single, long, multi-faceted prompt that lays out the entire project. 
 
 1. **Persistent Memory:**
    - `mco.core` and `mco.sc` are loaded into persistent memory at the start of orchestration
@@ -200,6 +203,24 @@ The MCO Server implements a sophisticated orchestration mechanism that leverages
    - The files combine structured syntax (`@sections`) with natural language processing (NLP) context (`> "text"`)
    - This creates an effective flow between structured data and flexible guidance
    - The NLP sections allow for nuance and creativity within the structured framework
+
+## TL;DR - A quick analogy to help you understand what MCO is doing
+
+Imagine two people that are the exact same. Two versions of the same person, (A/B diff views of a person). This person is an artist, a painter with a large canvas, thumb gripping a palette with many different colors, ready to paint a masterpiece. Each version has been hired to paint a specific image of intricate detailed bustling city scene with many different people, cars, shops, buildings, birds, a specific number of windows each building has, street signs, clouds, even the specific clothes people are wearing. 
+
+### Version 1 - Instructed by prompted/vibe coding (Non-MCO)
+
+1. The painter recieves from the person who hired him a very long, extremely detailed, extremely descriptive, very specific set of instructions for the painting. The painter reads it, then starts to paint. 
+2. Continuing to paint from memory of the instructions, the painter paints everything that he remembers, until he has to read the instructions again.
+3. Upon re-reading the instructions the painter realizes that he has painted several different sections that nearly follow the instructions, but some of the color choices and other little details are not correct. What's more is the painter notices that the scene has some background elements that really should have been painted first, then paint the parts that have already been painted over those background elements.
+4. The painter must fix several things, with no clear plan or standard process of refactoring the painting to fix the parts that are wrong, sometimes attempting to paint the background elements *carefully* around the objects in the foreground elements, sometimes painting over the foreground elements entirely and then repainting them (sometimes inaccurately). 
+5. Repeat steps 3 - 4 as many times as needed, until either finally is finished, or the buyer who hired the painter asks for his money back.  
+
+
+### Version 2 - Using the MCO Protocol
+
+1. The painter looks at the instructions. Before there was any instructions there was a request at the top: "Paint each part step by step in the order that I gave you: First, paint a landscape that we will fit things into later, where a river is the middle, getting smaller and fading in perspective. Next paint a small boat about 2/3rds of the way, just cruising down the river, then paint a blue stripe across the part of the boat not in the water. After this, in the upper left side-ish of the page, (not too far up or too the right though) paint a flock of birds, but make a flew of the typical V shape when birds fly together, make one side of the V seem a little off by putting an extra space between the second and third birds, as if the bird was invisible. Now, between the boat and the birds, paint a bird that had left the formation, and was now almost aggressively flying towards the boat." No doubt, the painter would need to keep going back to the instructions in order to follow them the best way, and this is how MCO works. The instructions "Paint each part step by step in the order that I gave you: First, paint a landscape that we will fit things into later, where a river is the middle, getting smaller and fading in perspective." would be the persistent part that stays in its persistent context. The rest would be stregically placed in the agent loop so as they loop they read more and understand  more of your instructions, without having to backtrack, or return to a different section, it can build more as each time it loops its forgotten what comes next after a certain numer of tasks. And this is who MCO allows for better control over the agents. 
+
 
 ## Implementation Details
 
