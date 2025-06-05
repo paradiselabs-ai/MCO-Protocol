@@ -22,148 +22,134 @@ Model Configuration Orchestration (MCO) Server is a lightweight orchestration la
 Traditional agent frameworks often struggle with reliability, determinism, and focus. MCO was created to solve these challenges by introducing a structured approach to agent orchestration that maintains the benefits of natural language while adding the reliability of structured programming. The MCO Protocol is a new standard for reliable, deterministic autonomous agentic orchestration that addresses the challenges of traditional agentic systems through structured workflows and progressive revelation. Think about the complete autonomy of AutoGPT, AgentGPT, etc. - MCO is the missing piece of Agent, Auto, BabyAGI or GPT or anything else. It allows for easily orchestrated robust and reliable results, prevents hallucinations, and provides a progressive feedback loop that builds on itself to iteratively complete the task, or continue is on-going job. Whether giving you a daily news update, checking your stocks, posting on social media, and with the goal of eventually even entireprise-level, complex multi-step, multi-agentic pipelines for industrial/factory autonomy in control systems.
 
 
-## Core Concepts
+# MCO As An MCP Server Packeged With An Easy Configuration Tool
 
-MCO introduces several key innovations:
+This repository contains the implementation of the MCO (Model Configuration Orchestration) Protocol MCP Server and Configuration Tool, designed to provide robust, and uniquely innovative autonomous orchestration capabilities to any agent framework with a single MCP Server.
 
-### Structured Orchestration vs. Traditional Approaches
+## Overview
+
+The MCO Protocol operates as an MCP (Model Context Protocol) server, exposing orchestration tools through the MCP protocol. This allows any MCP-enabled framework (AutoGPT, CrewAI, etc.) to use MCO by adding one line to their MCP config.
 
 ```mermaid
 graph TD
-    subgraph Traditional ["Traditional Agent Approach"]
-        TA[Single Prompt] --> TB[Agent]
-        TB --> TC[Result]
-        style TA fill:#f5f5f5,stroke:#333,color:#000000
-        style TB fill:#f5f5f5,stroke:#333,color:#000000
-        style TC fill:#f5f5f5,stroke:#333,color:#000000
-    end
-    
-    subgraph MCO ["MCO Protocol Approach"]
-        MA[Core Definition] --> MB[Persistent Memory]
-        MC[Success Criteria] --> MB
-        MD[Core Features] --> MB
-        MB --> ME[Agent]
-        ME --> MF[Task 1]
-        MF --> MG[Task 2]
-        MG --> MH[Final Result]
-        
-        MI[Progressive Injection: Secondary Features] -.-> MF
-        MI -.-> MG
-        MJ[Progressive Injection: Styles] -.-> MF
-        MJ -.-> MG
-        
-        style MA fill:#e1f5fe,stroke:#0277bd,color:#000000
-        style MB fill:#e8f5e9,stroke:#2e7d32,color:#000000
-        style MC fill:#e1f5fe,stroke:#0277bd,color:#000000
-        style MD fill:#e1f5fe,stroke:#0277bd,color:#000000
-        style ME fill:#fff3e0,stroke:#e65100,color:#000000
-        style MF fill:#f3e5f5,stroke:#6a1b9a,color:#000000
-        style MG fill:#f3e5f5,stroke:#6a1b9a,color:#000000
-        style MH fill:#e8eaf6,stroke:#303f9f,color:#000000
-        style MI fill:#ffebee,stroke:#c62828,color:#000000
-        style MJ fill:#fff8e1,stroke:#ff8f00,color:#000000
-    end
+    A[Agent Framework] -->|MCP Protocol| B[MCO MCP Server]
+    B -->|Loads| C[SNLP Files]
+    C -->|Define| D[Orchestration Flow]
+    B -->|Manages| E[Progressive Revelation]
+    B -->|Tracks| F[Workflow State]
+    A -->|Calls| G[MCP Tools]
+    G -->|Execute| H[Orchestration Steps]
 ```
 
-### Key Components
+## Key Features
 
-1. **Persistent vs. Injected Memory**
-   - **Persistent Memory**: Core definitions and success criteria that remain available throughout the entire process
-   - **Progressive Injection**: Features and styles injected at strategic points to guide the agent without overwhelming it
+- **Framework Agnostic**: Works with any MCP-enabled agent framework
+- **Progressive Revelation**: Strategically reveals information to agents at the right time
+- **SNLP Configuration**: Uses Syntactic Natural Language Programming for workflow definition
+- **Web-based Configuration Tool**: Easy creation of SNLP files through a guided interface
+- **Success Criteria Evaluation**: Automatically evaluates agent outputs against defined criteria
 
-2. **Syntactic Natural Language Programming (SNLP)**
-   - A new programming language for literally orchestrating AI that blends natural language and structured syntax that makes orchestration both human-readable and machine-parsable
-   - Uses `@data` markers and `> "<NLP>"` directives to structure information
-
-3. **Multi-File Structure**
-   - `.core` - Core workflow definition and persistent data
-   - `.sc` - Success criteria for evaluation (also stays persistent) **Shoutout to [Anthropic](https://anthropic.ai) for the inspiration here**
-   - `.features` - Feature specifications injected progressively (optional)
-   - `.styles` - Style guidelines injected progressively (optional, for UI/UX development)
-
-## Getting Started
-
-### Installation (Soon - for now just clone the repo)
+## Installation
 
 ```bash
-pip install mco-protocol
+npm install -g @paradiselabs/mco-protocol
 ```
 
-### Basic Usage
+## Quick Start
 
-1. Create your MCO files (and note the use of `> "NLP that adds optional context after each @definition"`):
+1. **Create a new MCO project**:
+   ```bash
+   mco init my-project
+   ```
+   This opens the configuration tool in your browser.
 
-```
-# mco.core
-@workflow "Research Assistant"
-@description "A workflow for researching and summarizing information on a topic."
-@version "1.0"
+2. **Configure your workflow**:
+   - Define workflow steps
+   - Set success criteria
+   - Add features and styling preferences
+   - Export SNLP files
 
-@data:
-  topic: "Artificial Intelligence"
-> "Focus on recent developments in AI agents and orchestration." 
+3. **Add to your MCP config**:
+   ```json
+   {
+     "mcpServers": {
+       "mco-orchestration": {
+         "command": "mco-server",
+         "args": ["--config-dir", "./my-project"]
+       }
+     }
+   }
+   ```
 
-@agents:
-  researcher:
-    model: "gpt-4"
-    description: "Researches information and finds relevant sources"
-```
+4. **Use in your agent framework**:
+   ```python
+   # Example with any MCP-enabled framework
+   directive = mcp_client.call_tool("get_next_directive")
+   result = execute_task(directive.instruction)
+   mcp_client.call_tool("complete_step", step_id=directive.step_id, result=result)
+   ```
 
-2. Start the MCO server:
+## SNLP File Structure
 
-```python
-from mco_server import MCOServer
+MCO uses four SNLP files to define the orchestration workflow:
 
-server = MCOServer()
-server.start_api_server()
-```
+- **mco.core**: Defines workflow, data variables, and workflow steps
+- **mco.sc**: Defines goal, success criteria, target audience, and developer vision
+- **mco.features**: Defines features to be injected during implementation steps
+- **mco.styles**: Defines styling preferences to be injected during formatting steps
 
-3. Use the MCO client to run an orchestration:
+## Progressive Revelation
 
-```python
-from mco_client import MCOClient
+MCO implements progressive revelation to improve agent reliability:
 
-client = MCOClient()
-orchestration_id = client.start_orchestration(
-    config_dir="./mco_files",
-    adapter_name="lmstudio",
-    adapter_config={"model_name": "llama3"}
-)
-```
+- **Persistent Memory**: Content from `mco.core` and `mco.sc` is always available
+- **Strategic Injection**: Content from `mco.features` and `mco.styles` is injected at strategic points
+- **Step Analysis**: Injection points are determined by analyzing step tasks or using default positions
 
-## LM Studio Integration
+## MCP Tools
 
-MCO Protocol works particularly well with LM Studio, transforming its capabilities from a simple chat interface into a powerful, orchestrated agent pipeline. By leveraging MCO's structured approach with LM Studio's Python SDK, you can create reliable, deterministic agent workflows even with less sophisticated base frameworks.
+MCO exposes the following tools through the MCP protocol:
 
-# Learn More Below
+### Workflow Management
+- `start_orchestration`: Start a new orchestration workflow
+- `get_next_directive`: Get the next directive for the current orchestration
+- `complete_step`: Complete the current step in the orchestration
+- `get_workflow_status`: Get the current status of the workflow
 
-## Documentation
+### Success Criteria
+- `evaluate_against_criteria`: Evaluate a result against the defined success criteria
 
-For detailed documentation, see the [docs](./docs) directory:
+### State Management
+- `get_persistent_context`: Get the persistent context for the current orchestration
+- `set_workflow_variable`: Set a workflow variable
+- `get_workflow_variable`: Get a workflow variable
 
-- [Integration Examples](./docs/integration_examples.md)
-- [File Types](./docs/file_types.md)
-- [Visual Setup Tool Design](./docs/visual_setup_tool_design.md)
+## CLI Commands
 
-## Examples
+- `mco init [project-name]`: Create new MCO project with config tool
+- `mco validate [config-dir]`: Validate SNLP files
+- `mco serve [config-dir]`: Start MCP server
+- `mco templates`: List available templates
+- `mco deploy [config-dir]`: Deploy to cloud MCP service (coming soon)
 
-The [examples](./examples) directory contains sample MCO configurations for various use cases:
+## Architecture
 
-- [Research Assistant](./examples/research_assistant/)
-- [Product Development](./examples/product_development/) (COMING SOON)
-- [Code Generation](./examples/code_generation/) (COMING SOON)
+The MCO MCP Server consists of the following components:
 
-## Contributing
+- **SNLP Parser**: Parses and interprets SNLP files
+- **Orchestration Engine**: Manages workflow state and progressive revelation
+- **MCP Tool Provider**: Exposes orchestration tools through the MCP protocol
+- **Configuration Tool**: Web-based interface for creating SNLP files
 
-Contributions are welcome! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
+## Development
+
+To contribute to this project:
+
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Run tests: `npm test`
+4. Start development server: `npm run dev`
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
-
-## Contact
-
-- Website: [https://paradiselabs.co](https://paradiselabs.co)
-- Email: developers@paradiselabs.co
-- Twitter: [@paradiselabs_ai](https://twitter.com/paradiselabs_ai)
-- Discord: [https://discord.gg/uQ69vc4Agc](https://discord.gg/uQ69vc4Agc)
+MIT
