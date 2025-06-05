@@ -21,8 +21,16 @@
     "agent",
     "snlp"
   ],
-  "author": "Paradise Labs",
+  "author": "ParadiseLabs, LLC",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paradiselabs-ai/MCO-Protocol.git"
+  },
+  "bugs": {
+    "url": "https://github.com/paradiselabs-ai/MCO-Protocol/issues"
+  },
+  "homepage": "https://github.com/paradiselabs-ai/MCO-Protocol#readme",
   "dependencies": {
     "commander": "^11.0.0",
     "express": "^4.18.2",
