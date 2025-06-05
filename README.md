@@ -41,15 +41,15 @@ graph TD
     subgraph MCO ["MCO Protocol Approach"]
         MA[Core Definition] --> MB[Persistent Memory]
         MC[Success Criteria] --> MB
-        MD[Features] --> MB
+        MD[Core Features] --> MB
         MB --> ME[Agent]
         ME --> MF[Task 1]
         MF --> MG[Task 2]
         MG --> MH[Final Result]
         
-        MI[Progressive Injection: Features] -.-> MF
+        MI[Progressive Injection: Secondary Features] -.-> MF
         MI -.-> MG
-        MJ[Progressive Injection: Styles] -.-> MF
+        MJ[Progressive Injection: Styles (i.e. UI/UX development)] -.-> MF
         MJ -.-> MG
         
         style MA fill:#e1f5fe,stroke:#0277bd,color:#000000
