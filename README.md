@@ -49,7 +49,7 @@ graph TD
         
         MI[Progressive Injection: Secondary Features] -.-> MF
         MI -.-> MG
-        MJ[Progressive Injection: Styles (such as UI/UX development)] -.-> MF
+        MJ[Progressive Injection: Styles] -.-> MF
         MJ -.-> MG
         
         style MA fill:#e1f5fe,stroke:#0277bd,color:#000000
@@ -73,13 +73,13 @@ graph TD
 
 2. **Syntactic Natural Language Programming (SNLP)**
    - A new programming language for literally orchestrating AI that blends natural language and structured syntax that makes orchestration both human-readable and machine-parsable
-   - Uses `@data` markers and `>NLP` directives to structure information
+   - Uses `@data` markers and `> "<NLP>"` directives to structure information
 
 3. **Multi-File Structure**
    - `.core` - Core workflow definition and persistent data
-   - `.sc` - Success criteria for evaluation (also stays persistent)
+   - `.sc` - Success criteria for evaluation (also stays persistent) **Shoutout to [Anthropic](https://anthropic.ai) for the inspiration here**
    - `.features` - Feature specifications injected progressively (optional)
-   - `.styles` - Style guidelines injected progressively (optional)
+   - `.styles` - Style guidelines injected progressively (optional, for UI/UX development)
 
 ## Getting Started
 
@@ -91,7 +91,7 @@ pip install mco-protocol
 
 ### Basic Usage
 
-1. Create your MCO files:
+1. Create your MCO files (and note the use of `> "NLP that adds optional context after each @definition"`):
 
 ```
 # mco.core
@@ -101,7 +101,7 @@ pip install mco-protocol
 
 @data:
   topic: "Artificial Intelligence"
-> "Focus on recent developments in AI agents and orchestration."
+> "Focus on recent developments in AI agents and orchestration." 
 
 @agents:
   researcher:
