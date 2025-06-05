@@ -8,7 +8,7 @@ preserving the original Percertain DSL structure and progressive revelation appr
 from typing import Dict, Any, Optional, List
 import logging
 import json
-from ..adapters import BaseAdapter, register_adapter
+from mco_server.adapters import BaseAdapter, register_adapter
 
 logger = logging.getLogger(__name__)
 
