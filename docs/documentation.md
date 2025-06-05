@@ -32,12 +32,12 @@ flowchart LR
         E2[Success Criteria] --> C2
     end
     
-    style A1 fill:#ffcccc,stroke:#ff0000
-    style C1 fill:#ffcccc,stroke:#ff0000
-    style A2 fill:#ccffcc,stroke:#00cc00
-    style D2 fill:#ccffcc,stroke:#00cc00
-    style E2 fill:#ccffcc,stroke:#00cc00
-    style C2 fill:#ccffcc,stroke:#00cc00
+    style A1 fill:#ffcccc,stroke:#ff0000,color:#000000
+    style C1 fill:#ffcccc,stroke:#ff0000,color:#000000
+    style A2 fill:#ccffcc,stroke:#00cc00,color:#000000
+    style D2 fill:#ccffcc,stroke:#00cc00,color:#000000
+    style E2 fill:#ccffcc,stroke:#00cc00,color:#000000
+    style C2 fill:#ccffcc,stroke:#00cc00,color:#000000
 ```
 
 Traditional approaches to AI agent orchestration often rely on "vibe coding" - providing a single, lengthy prompt and hoping the agent understands and executes correctly. This leads to:
