@@ -9,7 +9,8 @@
 const { program } = require('commander');
 const fs = require('fs-extra');
 const path = require('path');
-const open = require('open');
+const { default: open } = await import('open');
+await open(configToolPath);
 const { spawn } = require('child_process');
 const { SNLPParser } = require('../lib/snlp-parser');
 
