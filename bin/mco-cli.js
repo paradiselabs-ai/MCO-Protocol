@@ -9,8 +9,6 @@
 const { program } = require('commander');
 const fs = require('fs-extra');
 const path = require('path');
-const { default: open } = await import('open');
-await open(configToolPath);
 const { spawn } = require('child_process');
 const { SNLPParser } = require('../lib/snlp-parser');
 
@@ -44,6 +42,7 @@ program
       // Open configuration tool
       console.log('Opening configuration tool...');
       const configToolPath = path.resolve(__dirname, '../web/config-tool/index.html');
+      const { default: open } = await import('open');
       await open(configToolPath);
       
       console.log(`
