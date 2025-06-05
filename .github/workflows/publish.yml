@@ -34,6 +34,7 @@ jobs:
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        continue-on-error: true
           
       - name: Push version tag
         if: github.event_name == 'workflow_dispatch'
