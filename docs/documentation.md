@@ -19,25 +19,40 @@ MCO (Multi-Context Orchestration) is a framework-agnostic protocol for orchestra
 ### The Problem: "Vibe Coding" vs. Structured Orchestration
 
 ```mermaid
-flowchart LR
-    subgraph "Traditional Approach"
-        A1[Long, Complex Prompt] --> B1[Agent]
-        B1 --> C1[Unpredictable Results]
+graph TD
+    subgraph Traditional ["Traditional Agent Approach"]
+        TA[Single Prompt] --> TB[Agent]
+        TB --> TC[Result]
+        style TA fill:#f5f5f5,stroke:#333,color:#000000
+        style TB fill:#f5f5f5,stroke:#333,color:#000000
+        style TC fill:#f5f5f5,stroke:#333,color:#000000
     end
     
-    subgraph "MCO Approach"
-        A2[Core Context] --> B2[Agent]
-        D2[Progressive Revelation] --> B2
-        B2 --> C2[Reliable Results]
-        E2[Success Criteria] --> C2
+    subgraph MCO ["MCO Protocol Approach"]
+        MA[Core Definition] --> MB[Persistent Memory]
+        MC[Success Criteria] --> MB
+        MD[Core Features] --> MB
+        MB --> ME[Agent]
+        ME --> MF[Task 1]
+        MF --> MG[Task 2]
+        MG --> MH[Final Result]
+        
+        MI[Progressive Injection: Secondary Features] -.-> MF
+        MI -.-> MG
+        MJ[Progressive Injection: Styles] -.-> MF
+        MJ -.-> MG
+        
+        style MA fill:#e1f5fe,stroke:#0277bd,color:#000000
+        style MB fill:#e8f5e9,stroke:#2e7d32,color:#000000
+        style MC fill:#e1f5fe,stroke:#0277bd,color:#000000
+        style MD fill:#e1f5fe,stroke:#0277bd,color:#000000
+        style ME fill:#fff3e0,stroke:#e65100,color:#000000
+        style MF fill:#f3e5f5,stroke:#6a1b9a,color:#000000
+        style MG fill:#f3e5f5,stroke:#6a1b9a,color:#000000
+        style MH fill:#e8eaf6,stroke:#303f9f,color:#000000
+        style MI fill:#ffebee,stroke:#c62828,color:#000000
+        style MJ fill:#fff8e1,stroke:#ff8f00,color:#000000
     end
-    
-    style A1 fill:#ffcccc,stroke:#ff0000,color:#000000
-    style C1 fill:#ffcccc,stroke:#ff0000,color:#000000
-    style A2 fill:#ccffcc,stroke:#00cc00,color:#000000
-    style D2 fill:#ccffcc,stroke:#00cc00,color:#000000
-    style E2 fill:#ccffcc,stroke:#00cc00,color:#000000
-    style C2 fill:#ccffcc,stroke:#00cc00,color:#000000
 ```
 
 Traditional approaches to AI agent orchestration often rely on "vibe coding" - providing a single, lengthy prompt and hoping the agent understands and executes correctly. This leads to:
