@@ -86,7 +86,7 @@ graph TD
         OR --> EV[Evaluator]
         OR --> API[API Gateway]
         
-        classDef core fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+        classDef core fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000000
         class CM,SM,OR,EV,API core
     end
     
@@ -95,7 +95,7 @@ graph TD
         AR --> AGT[AgentGPT Adapter]
         AR --> OTH[Other Adapters...]
         
-        classDef adapters fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+        classDef adapters fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000000
         class AR,LMS,AGT,OTH adapters
     end
     
@@ -105,14 +105,14 @@ graph TD
         FEAT[mco.features] --> CM
         STYLE[mco.styles] --> CM
         
-        classDef config fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+        classDef config fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px,color:#000000
         class CORE,SC,FEAT,STYLE config
     end
     
     OR --> AR
     CLIENT[Client Application] --> API
     
-    classDef client fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef client fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000000
     class CLIENT client
 ```
 
@@ -224,9 +224,9 @@ graph TD
     FEAT -.-> AGENT
     STYLE -.-> AGENT
     
-    classDef persistent fill:#ccffcc,stroke:#00cc00,stroke-width:2px
-    classDef injected fill:#ffffcc,stroke:#cccc00,stroke-width:2px
-    classDef agent fill:#ccccff,stroke:#0000cc,stroke-width:2px
+    classDef persistent fill:#ccffcc,stroke:#00cc00,stroke-width:2px,color:#000000
+    classDef injected fill:#ffffcc,stroke:#cccc00,stroke-width:2px,color:#000000
+    classDef agent fill:#ccccff,stroke:#0000cc,stroke-width:2px,color:#000000
     
     class CORE,SC persistent
     class FEAT,STYLE injected
