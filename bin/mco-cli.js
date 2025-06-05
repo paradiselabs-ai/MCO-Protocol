@@ -171,6 +171,40 @@ program
     }
   });
 
+// Sample command - Create sample workflow project
+program
+  .command('sample')
+  .description('Create a sample workflow project')
+  .argument('[project-name]', 'Name of the project directory', 'sample-workflow')
+  .action(async (projectName) => {
+    try {
+      // Create project directory
+      const projectDir = path.resolve(process.cwd(), projectName);
+      await fs.ensureDir(projectDir);
+      
+      console.log(`Creating sample workflow project in ${projectDir}...`);
+      
+      // Copy sample workflow files
+      const templateDir = path.resolve(__dirname, '../templates/sample-workflow');
+      await fs.copy(templateDir, projectDir);
+      
+      console.log('Copied sample workflow files.');
+      
+      console.log(`
+Sample MCO project created successfully!
+
+To start the MCP server:
+  mco serve ${projectName}
+
+To validate the SNLP files:
+  mco validate ${projectName}
+      `);
+    } catch (error) {
+      console.error('Error creating sample project:', error);
+      process.exit(1);
+    }
+  });
+
 // Templates command - List available templates
 program
   .command('templates')
