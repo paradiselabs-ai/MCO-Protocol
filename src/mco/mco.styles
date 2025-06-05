@@ -1,0 +1,30 @@
+# MCO Styles - Research Assistant Example
+# This file defines styling preferences that are injected during formatting or presentation steps
+
+@style Writing style
+>NLP Use a formal, academic writing style with proper citations and references.
+>NLP Write in clear, concise language that avoids jargon when possible.
+>NLP When technical terms are necessary, define them on first use.
+>NLP Use active voice rather than passive voice when appropriate.
+>NLP Maintain a neutral, objective tone throughout the report.
+
+@style Formatting
+>NLP Use clear headings and subheadings to organize content.
+>NLP Include a table of contents for reports longer than 1000 words.
+>NLP Use bullet points for lists and numbered lists for sequential items or rankings.
+>NLP Keep paragraphs focused on a single idea, typically 3-5 sentences.
+>NLP Include page numbers and section references for longer documents.
+
+@style Citations
+>NLP Use APA citation format for all references.
+>NLP Include in-text citations for all factual claims and quoted material.
+>NLP Provide a complete bibliography or references section at the end of the report.
+>NLP For web sources, include access dates and URLs.
+>NLP For academic papers, include DOI when available.
+
+@style Visual elements
+>NLP Keep visual elements clean and minimal with a professional appearance.
+>NLP Use a consistent color scheme for all charts and graphs.
+>NLP Include clear titles and labels for all visual elements.
+>NLP Provide captions that explain the significance of each visual element.
+>NLP Ensure all visual elements are accessible and understandable in both color and black-and-white formats.

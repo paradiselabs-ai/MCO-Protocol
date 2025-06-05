@@ -1,348 +1,347 @@
-# MCO Server Documentation
+# MCO Protocol Documentation
 
-## Overview
+## What is MCO?
 
-This documentation provides comprehensive information about MCO Server, its architecture, configuration, and usage.
+MCO (Multi-Context Orchestration) is a framework-agnostic protocol for orchestrating AI agents with improved reliability and predictability. Unlike traditional "vibe coding" approaches where agents operate with minimal guidance, MCO provides structured orchestration with progressive revelation of information and explicit success criteria evaluation.
 
 ## Table of Contents
 
-1. [Introduction](#introduction)
+1. [Core Concepts](#core-concepts)
 2. [Architecture](#architecture)
-3. [Configuration Files](#configuration-files)
-4. [API Reference](#api-reference)
-5. [Framework Adapters](#framework-adapters)
-6. [Integration Guide](#integration-guide)
+3. [SNLP Syntax Guide](#snlp-syntax-guide)
+4. [File Types](#file-types)
+5. [Integration Examples](#integration-examples)
+6. [API Reference](#api-reference)
+7. [Adapter Development](#adapter-development)
 
-## Introduction
+## Core Concepts
 
-MCO Server is a framework-agnostic orchestration layer for reliable AI agent workflows. It provides a standardized way to orchestrate AI agents across different frameworks, ensuring reliable, high-quality outputs.
+### The Problem: "Vibe Coding" vs. Structured Orchestration
 
-Unlike traditional "vibe coding" approaches where AI agents operate without clear guidance, MCO Server provides structured orchestration with explicit success criteria evaluation, dramatically improving reliability and output quality.
+```mermaid
+flowchart LR
+    subgraph "Traditional Approach"
+        A1[Long, Complex Prompt] --> B1[Agent]
+        B1 --> C1[Unpredictable Results]
+    end
+    
+    subgraph "MCO Approach"
+        A2[Core Context] --> B2[Agent]
+        D2[Progressive Revelation] --> B2
+        B2 --> C2[Reliable Results]
+        E2[Success Criteria] --> C2
+    end
+    
+    style A1 fill:#ffcccc,stroke:#ff0000
+    style C1 fill:#ffcccc,stroke:#ff0000
+    style A2 fill:#ccffcc,stroke:#00cc00
+    style D2 fill:#ccffcc,stroke:#00cc00
+    style E2 fill:#ccffcc,stroke:#00cc00
+    style C2 fill:#ccffcc,stroke:#00cc00
+```
+
+Traditional approaches to AI agent orchestration often rely on "vibe coding" - providing a single, lengthy prompt and hoping the agent understands and executes correctly. This leads to:
+
+- **Memory limitations**: Agents struggle to remember all details from long prompts
+- **Context confusion**: Agents lose track of priorities and requirements
+- **Hallucinations**: Agents fill in gaps with incorrect assumptions
+- **Inconsistent results**: The same prompt produces different results each time
+
+MCO solves these problems through:
+
+1. **Progressive Revelation**: Information is provided to agents in a structured, sequential manner
+2. **Persistent vs. Injected Context**: Core information stays in memory while details are injected when needed
+3. **Success Criteria Evaluation**: Explicit evaluation of results against defined criteria
+4. **Syntactical Natural Language Programming (SNLP)**: A hybrid approach combining structured syntax with natural language
+
+### The Painting Analogy
+
+To understand how MCO works, imagine two identical painters tasked with creating a complex cityscape:
+
+#### Version 1: Traditional "Vibe Coding" Approach
+1. The painter receives extremely detailed instructions for the entire painting at once
+2. The painter tries to remember everything while working
+3. Upon reviewing the instructions again, the painter realizes they've made mistakes and painted elements out of order
+4. The painter must erase and redo significant portions of work
+
+#### Version 2: MCO Approach
+1. The painter first receives core instructions: "Paint a landscape with a river in the middle"
+2. After completing this foundation, they receive the next instruction: "Add a small boat cruising down the river"
+3. Each new instruction builds on the previous work in a logical sequence
+4. The painter can focus on each element without being overwhelmed
+
+MCO works similarly by providing core context that stays in persistent memory while strategically revealing additional details at the right moments in the agent's workflow.
 
 ## Architecture
 
-MCO Server follows a modular architecture with the following key components:
+MCO follows a modular architecture designed for flexibility and framework independence:
 
-### Core Components
-
-1. **Server**: The main entry point that coordinates all components
-2. **Config Manager**: Loads and manages MCO configuration files
-3. **State Manager**: Maintains orchestration state with persistence options
-4. **Orchestrator**: Coordinates workflow execution and success criteria evaluation
-5. **Evaluator**: Evaluates success criteria against execution results
-6. **Adapters**: Framework-specific adapters for executing directives
-7. **API Gateway**: REST API for interacting with MCO Server
-
-### Architecture Diagram
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                        MCO Server                           │
-├─────────────┬─────────────┬─────────────┬─────────────┬─────┴─────┐
-│             │             │             │             │           │
-│ Config      │ State       │ Orchestrator│ Evaluator   │ API       │
-│ Manager     │ Manager     │             │             │ Gateway   │
-│             │             │             │             │           │
-└─────────────┴─────────────┴──────┬──────┴─────────────┴───────────┘
-                                   │
-                                   ▼
-                          ┌─────────────────┐
-                          │ Adapter Registry│
-                          └────────┬────────┘
-                                   │
-                 ┌─────────────────┼─────────────────┐
-                 │                 │                 │
-        ┌────────▼─────┐  ┌────────▼─────┐  ┌────────▼─────┐
-        │ LM Studio    │  │ AgentGPT     │  │ SuperExpert  │
-        │ Adapter      │  │ Adapter      │  │ Adapter      │
-        └──────────────┘  └──────────────┘  └──────────────┘
-```
-
-## Configuration Files
-
-MCO Server uses a set of configuration files to define orchestration behavior:
-
-### mco.app
-
-The main application configuration file that defines the workflow steps and overall behavior.
-
-Example:
-```
-@workflow
-{
-  "name": "Research Assistant",
-  "description": "An AI research assistant workflow",
-  "steps": [
-    {
-      "id": "step_1",
-      "name": "Understand Research Topic",
-      "instruction": "Analyze the research topic and identify key areas to investigate",
-      "success_condition": "topic_understanding"
-    },
-    {
-      "id": "step_2",
-      "name": "Gather Information",
-      "instruction": "Search for relevant information about {{{topic}}}",
-      "success_condition": "information_gathered"
-    },
-    {
-      "id": "step_3",
-      "name": "Synthesize Findings",
-      "instruction": "Synthesize the gathered information into a coherent report",
-      "success_condition": "synthesis_complete"
-    }
-  ]
-}
+```mermaid
+graph TD
+    subgraph "MCO Server"
+        direction TB
+        
+        CM[Config Manager] --> OR[Orchestrator]
+        SM[State Manager] --> OR
+        OR --> EV[Evaluator]
+        OR --> API[API Gateway]
+        
+        classDef core fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+        class CM,SM,OR,EV,API core
+    end
+    
+    subgraph "Adapters"
+        AR[Adapter Registry] --> LMS[LM Studio Adapter]
+        AR --> AGT[AgentGPT Adapter]
+        AR --> OTH[Other Adapters...]
+        
+        classDef adapters fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+        class AR,LMS,AGT,OTH adapters
+    end
+    
+    subgraph "Configuration"
+        CORE[mco.core] --> CM
+        SC[mco.sc] --> CM
+        FEAT[mco.features] --> CM
+        STYLE[mco.styles] --> CM
+        
+        classDef config fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+        class CORE,SC,FEAT,STYLE config
+    end
+    
+    OR --> AR
+    CLIENT[Client Application] --> API
+    
+    classDef client fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    class CLIENT client
 ```
 
-### mco.sc
+### Component Flow
 
-The success criteria configuration file that defines how to evaluate the success of each step.
-
-Example:
-```
-@success_criteria
-{
-  "success_criteria": [
-    {
-      "id": "topic_understanding",
-      "description": "Demonstrate understanding of the research topic",
-      "evaluation": "The response must identify at least 3 key areas for investigation"
-    },
-    {
-      "id": "information_gathered",
-      "description": "Gather comprehensive information about the topic",
-      "evaluation": "The response must include information from at least 3 different sources"
-    },
-    {
-      "id": "synthesis_complete",
-      "description": "Synthesize findings into a coherent report",
-      "evaluation": "The response must include a structured report with introduction, findings, and conclusion"
-    }
-  ]
-}
-```
-
-### mco.features
-
-Optional file that defines features to be injected into the workflow.
-
-Example:
-```
-@features
-{
-  "research_capabilities": [
-    "web_search",
-    "academic_database_access",
-    "citation_management"
-  ],
-  "analysis_capabilities": [
-    "data_visualization",
-    "statistical_analysis",
-    "comparative_review"
-  ]
-}
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant S as MCO Server
+    participant A as Adapter
+    participant M as Model/Framework
+    
+    C->>S: Start Orchestration
+    S->>S: Load Core & SC into Persistent Memory
+    S->>S: Analyze Workflow
+    
+    loop For Each Step
+        C->>S: Get Next Directive
+        S->>S: Generate Directive
+        
+        alt Strategic Injection Point
+            S->>S: Inject Features/Styles
+        end
+        
+        S-->>C: Return Directive
+        C->>S: Execute Directive
+        S->>A: Execute via Adapter
+        A->>M: Framework-specific Call
+        M-->>A: Framework Response
+        A-->>S: Adapter Response
+        S->>S: Evaluate Against Success Criteria
+        S-->>C: Return Result + Evaluation
+    end
+    
+    S->>C: Orchestration Complete
 ```
 
-### mco.styles
+## SNLP Syntax Guide
 
-Optional file that defines style preferences for the workflow outputs.
+Syntactical Natural Language Programming (SNLP) is the core syntax used in MCO files. It combines structured markers with natural language to create a hybrid approach that is both machine-parsable and human-readable.
 
-Example:
-```
-@styles
-{
-  "writing_style": "academic",
-  "citation_style": "APA",
-  "formatting": {
-    "headings": "numbered",
-    "tables": "minimal",
-    "figures": "labeled"
-  }
-}
-```
-
-## API Reference
-
-MCO Server provides a REST API for interacting with orchestrations:
-
-### Start Orchestration
+### Basic Syntax
 
 ```
-POST /api/v1/orchestration
+@marker Identifier
+>NLP Natural language content that provides context, instructions, or details.
 ```
 
-Request body:
-```json
-{
-  "config_dir": "/path/to/mco",
-  "adapter_name": "lmstudio",
-  "adapter_config": {
-    "model_name": "qwen2.5-7b-instruct-1m"
-  },
-  "initial_state": {
-    "topic": "quantum computing"
-  }
-}
-```
+- **@marker**: Defines the type of content that follows
+- **Identifier**: Names or categorizes the content (optional for some markers)
+- **>NLP**: Indicates natural language content follows
 
-Response:
-```json
-{
-  "orchestration_id": "123e4567-e89b-12d3-a456-426614174000"
-}
-```
-
-### Get Next Directive
+### Example SNLP Syntax
 
 ```
-POST /api/v1/orchestration/{orchestration_id}/directive
+@data Research capability
+>NLP The agent should be able to search for information on a given topic using available tools.
+
+@data Analysis capability
+>NLP The agent should analyze and synthesize information from multiple sources, identifying patterns and insights.
 ```
 
-Response:
-```json
-{
-  "type": "execute",
-  "step_id": "step_1",
-  "instruction": "Analyze the research topic and identify key areas to investigate",
-  "guidance": "You need to focus on: Demonstrate understanding of the research topic. Specifically, ensure that The response must identify at least 3 key areas for investigation",
-  "step_index": 0,
-  "total_steps": 3
-}
-```
+### Common Markers
 
-### Execute Directive
+| Marker | Purpose | Example |
+|--------|---------|---------|
+| `@data` | Defines a data point or capability | `@data Search capability` |
+| `@workflow` | Defines workflow metadata | `@workflow "Research Assistant"` |
+| `@goal` | Defines the overall goal | `@goal "Create a comprehensive research report"` |
+| `@success_criteria` | Defines evaluation criteria | `@success_criteria "Contains at least 3 sources"` |
+| `@optional` | Defines optional features | `@optional Advanced visualization` |
+| `@style` | Defines styling preferences | `@style "Academic writing style"` |
 
-```
-POST /api/v1/orchestration/{orchestration_id}/execute
-```
+### Progressive Structure
 
-Response:
-```json
-{
-  "result": {
-    "output": "I've analyzed the quantum computing research topic and identified the following key areas to investigate:\n\n1. Quantum Algorithms\n2. Quantum Hardware\n3. Quantum Error Correction\n4. Quantum Machine Learning\n5. Quantum Cryptography",
-    "metadata": {
-      "model": "qwen2.5-7b-instruct-1m",
-      "tokens": 128
-    },
-    "status": "success"
-  },
-  "evaluation": {
-    "success": true,
-    "feedback": "Success: The response identified 5 key areas for investigation, exceeding the requirement of 3",
-    "progress": 0.33,
-    "criterion_id": "topic_understanding",
-    "details": {}
-  }
-}
-```
-
-### Get Orchestration Status
+SNLP follows a progressive structure where each new element builds on previous ones:
 
 ```
-GET /api/v1/orchestration/{orchestration_id}
+@data Foundation
+>NLP First, establish the basic structure.
+
+@data Building blocks
+>NLP Next, add the core components that build on the foundation.
+
+@data Advanced features
+>NLP Finally, incorporate advanced features that enhance the core components.
 ```
 
-Response:
-```json
-{
-  "orchestration_id": "123e4567-e89b-12d3-a456-426614174000",
-  "status": "in_progress",
-  "current_step_index": 1,
-  "completed_steps": ["step_1"],
-  "total_steps": 3,
-  "progress": 0.33
-}
+This progressive approach mirrors how software development naturally occurs - starting with foundations and building up in layers.
+
+## File Types
+
+MCO uses four file types to organize orchestration logic:
+
+```mermaid
+graph TD
+    subgraph "Persistent Memory"
+        CORE[mco.core<br>Core functionality]
+        SC[mco.sc<br>Success criteria]
+    end
+    
+    subgraph "Strategic Injection"
+        FEAT[mco.features<br>Optional features]
+        STYLE[mco.styles<br>Styling preferences]
+    end
+    
+    CORE --> AGENT[AI Agent]
+    SC --> AGENT
+    FEAT -.-> AGENT
+    STYLE -.-> AGENT
+    
+    classDef persistent fill:#ccffcc,stroke:#00cc00,stroke-width:2px
+    classDef injected fill:#ffffcc,stroke:#cccc00,stroke-width:2px
+    classDef agent fill:#ccccff,stroke:#0000cc,stroke-width:2px
+    
+    class CORE,SC persistent
+    class FEAT,STYLE injected
+    class AGENT agent
 ```
 
-## Framework Adapters
+### 1. mco.core
 
-MCO Server supports multiple AI agent frameworks through adapters:
+Contains essential functionality that stays in persistent memory throughout the orchestration.
 
-### LM Studio Adapter
+**Example mco.core file:**
 
-Adapter for the LM Studio Python SDK.
+```
+# Core functionality for Research Assistant
+
+@workflow "Research Assistant"
+>NLP An AI assistant that helps users research topics and create comprehensive reports.
+
+@data Research capability
+>NLP The agent should be able to search for information on a given topic using available tools.
+
+@data Analysis capability
+>NLP The agent should analyze and synthesize information from multiple sources, identifying patterns and insights.
+
+@data Report generation
+>NLP The agent should generate well-structured reports with clear sections and logical flow.
+```
+
+### 2. mco.sc (Success Criteria)
+
+Defines criteria for evaluating success, also kept in persistent memory.
+
+**Example mco.sc file:**
+
+```
+# Success criteria for Research Assistant
+
+@goal "Create comprehensive research reports on user-specified topics"
+>NLP The goal is to produce well-researched, accurate, and insightful reports that meet academic standards.
+
+@success_criteria Comprehensive coverage
+>NLP The report should cover multiple aspects of the topic, not just the most obvious ones.
+
+@success_criteria Multiple sources
+>NLP The report should incorporate information from at least 3 different reputable sources.
+
+@success_criteria Factual accuracy
+>NLP All information provided must be factually accurate and properly attributed.
+
+@success_criteria Logical structure
+>NLP The report should follow a logical structure with clear introduction, body, and conclusion.
+```
+
+### 3. mco.features
+
+Contains optional features that are injected at strategic points in the workflow.
+
+**Example mco.features file:**
+
+```
+# Optional features for Research Assistant
+
+@optional Data visualization
+>NLP When appropriate, create charts or graphs to visualize key data points or trends.
+
+@optional Counterarguments
+>NLP Include a section addressing potential counterarguments or alternative perspectives.
+
+@optional Future implications
+>NLP Discuss potential future implications or developments related to the topic.
+
+@optional Case studies
+>NLP Incorporate relevant case studies or examples that illustrate key points.
+```
+
+### 4. mco.styles
+
+Defines styling preferences that are injected during formatting or presentation steps.
+
+**Example mco.styles file:**
+
+```
+# Styling preferences for Research Assistant
+
+@style Writing style
+>NLP Use a formal, academic writing style with proper citations and references.
+
+@style Formatting
+>NLP Use clear headings and subheadings to organize content. Include a table of contents for reports longer than 1000 words.
+
+@style Citations
+>NLP Use APA citation format for all references.
+
+@style Visual elements
+>NLP Keep visual elements clean and minimal. Use a consistent color scheme for all charts and graphs.
+```
+
+## Integration Examples
+
+### LM Studio Integration
+
+LM Studio is primarily known as a chat interface for local LLMs, but with MCO, it can be transformed into a reliable agent orchestration platform:
 
 ```python
 from mco_server import MCOServer
 from mco_server.adapters.lmstudio import LMStudioAdapter
 
-# Initialize server with LM Studio adapter
+# Initialize MCO Server
 server = MCOServer()
-server.register_adapter("lmstudio", LMStudioAdapter())
 
-# Start orchestration
+# Start orchestration with LM Studio adapter
 orchestration_id = server.start_orchestration(
-    config_dir="./my_project/mco",
+    config_dir="./examples/research_assistant/",
     adapter_name="lmstudio",
-    adapter_config={
-        "model_name": "qwen2.5-7b-instruct-1m",
-        "system_prompt": "You are a helpful research assistant."
-    }
-)
-```
-
-### AgentGPT Adapter
-
-Adapter for AgentGPT.
-
-```python
-from mco_server import MCOServer
-from mco_server.adapters.agentgpt import AgentGPTAdapter
-
-# Initialize server with AgentGPT adapter
-server = MCOServer()
-server.register_adapter("agentgpt", AgentGPTAdapter())
-
-# Start orchestration
-orchestration_id = server.start_orchestration(
-    config_dir="./my_project/mco",
-    adapter_name="agentgpt",
-    adapter_config={
-        "api_key": "your_api_key",
-        "agent_type": "researcher"
-    }
-)
-```
-
-### SuperExpert Adapter
-
-Adapter for SuperExpert.
-
-```python
-from mco_server import MCOServer
-from mco_server.adapters.superexpert import SuperExpertAdapter
-
-# Initialize server with SuperExpert adapter
-server = MCOServer()
-server.register_adapter("superexpert", SuperExpertAdapter())
-
-# Start orchestration
-orchestration_id = server.start_orchestration(
-    config_dir="./my_project/mco",
-    adapter_name="superexpert",
-    adapter_config={
-        "api_key": "your_api_key",
-        "expert_type": "coder"
-    }
-)
-```
-
-## Integration Guide
-
-### Basic Integration
-
-```python
-from mco_server import MCOServer
-
-# Initialize server
-server = MCOServer()
-
-# Start orchestration
-orchestration_id = server.start_orchestration(
-    config_dir="./my_project/mco",
-    adapter_name="lmstudio"
+    adapter_config={"model_name": "llama3-8b"}
 )
 
 # Run orchestration loop
@@ -354,20 +353,21 @@ while True:
         print("Orchestration complete!")
         break
     
-    print(f"\n--- Step: {directive['step_id']} ---")
+    print(f"\n--- Step {directive['step_index'] + 1}/{directive['total_steps']} ---")
     print(f"Instruction: {directive['instruction']}")
     
     # Execute directive
     result = server.execute_directive(orchestration_id)
     
-    # Print evaluation
-    evaluation = result["evaluation"]
+    # Process result
+    evaluation = server.process_result(orchestration_id, result)
     print(f"Success: {evaluation['success']}")
     print(f"Feedback: {evaluation['feedback']}")
-    print(f"Progress: {evaluation['progress'] * 100:.0f}%")
 ```
 
-### API Server Integration
+### Basic API Server
+
+For web-based applications, you can run MCO as an API server:
 
 ```python
 from mco_server import MCOServer
@@ -381,16 +381,186 @@ server.start_api_server(host="0.0.0.0", port=8000)
 print("MCO Server API running on http://0.0.0.0:8000")
 ```
 
-### Docker Integration
+## API Reference
 
-```bash
-# Build Docker image
-docker build -t mco-server .
+MCO provides a RESTful API for interacting with orchestrations:
 
-# Run Docker container
-docker run -p 8000:8000 -v ./my_project/mco:/app/mco mco-server
+### Start Orchestration
+
+```
+POST /api/v1/orchestration
 ```
 
-### Framework-Specific Integration
+Request body:
+```json
+{
+  "config_dir": "./examples/research_assistant/",
+  "adapter_name": "lmstudio",
+  "adapter_config": {
+    "model_name": "llama3-8b"
+  }
+}
+```
 
-See the [Framework Adapters](#framework-adapters) section for framework-specific integration examples.
+Response:
+```json
+{
+  "orchestration_id": "123e4567-e89b-12d3-a456-426614174000",
+  "status": "initialized"
+}
+```
+
+### Get Next Directive
+
+```
+GET /api/v1/orchestration/{orchestration_id}/directive
+```
+
+Response:
+```json
+{
+  "type": "execute",
+  "instruction": "Research the topic of quantum computing",
+  "step_index": 0,
+  "total_steps": 3,
+  "success_criteria": "The research should identify at least 3 key areas in quantum computing"
+}
+```
+
+### Execute Directive
+
+```
+POST /api/v1/orchestration/{orchestration_id}/execute
+```
+
+Response:
+```json
+{
+  "result": "I've researched quantum computing and identified these key areas: 1) Quantum Algorithms, 2) Quantum Hardware, 3) Quantum Error Correction, 4) Quantum Applications, 5) Quantum Software Development",
+  "evaluation": {
+    "success": true,
+    "feedback": "Successfully identified 5 key areas, exceeding the requirement of 3",
+    "progress": 0.33
+  }
+}
+```
+
+## Adapter Development
+
+MCO supports multiple AI frameworks through adapters. Here's how to create a new adapter:
+
+### Adapter Interface
+
+All adapters must implement the `BaseAdapter` interface:
+
+```python
+from abc import ABC, abstractmethod
+from typing import Dict, Any
+
+class BaseAdapter(ABC):
+    """Base class for all MCO adapters."""
+    
+    def __init__(self, config: Dict[str, Any]):
+        """Initialize the adapter with configuration."""
+        self.config = config
+    
+    @abstractmethod
+    def execute(self, directive: Dict[str, Any]) -> Dict[str, Any]:
+        """Execute a directive using the framework."""
+        pass
+    
+    @abstractmethod
+    def evaluate(self, result: Dict[str, Any], criteria: Dict[str, Any]) -> Dict[str, Any]:
+        """Evaluate a result against success criteria."""
+        pass
+    
+    @abstractmethod
+    def cleanup(self) -> None:
+        """Clean up any resources used by the adapter."""
+        pass
+```
+
+### Example Adapter Implementation
+
+Here's a simplified example of the LM Studio adapter:
+
+```python
+from mco_server.adapters.base import BaseAdapter
+import lmstudio
+
+class LMStudioAdapter(BaseAdapter):
+    """Adapter for LM Studio."""
+    
+    def __init__(self, config):
+        super().__init__(config)
+        
+        # Initialize LM Studio client
+        self.client = lmstudio.llm(
+            model_name=config.get("model_name"),
+            host=config.get("host", "localhost"),
+            port=config.get("port", 1234)
+        )
+        self.chat = lmstudio.Chat()
+    
+    def execute(self, directive):
+        # Extract directive content
+        content = directive.get("content", "")
+        
+        # Create system prompt
+        system_prompt = "You are a helpful AI assistant."
+        self.chat = lmstudio.Chat(system_prompt)
+        
+        # Add user message
+        self.chat.add_user_message(content)
+        
+        # Generate response
+        response = self.client.respond(self.chat)
+        
+        return {
+            "result": response,
+            "metadata": {
+                "model": self.config.get("model_name")
+            }
+        }
+    
+    def evaluate(self, result, criteria):
+        # Implementation of evaluation logic
+        # ...
+        
+        return {
+            "success": 0.9,
+            "feedback": "Evaluation feedback"
+        }
+    
+    def cleanup(self):
+        self.client = None
+        self.chat = None
+```
+
+### Registering an Adapter
+
+To make your adapter available to MCO:
+
+```python
+from mco_server import MCOServer
+from my_custom_adapter import MyCustomAdapter
+
+# Initialize server
+server = MCOServer()
+
+# Register custom adapter
+server.register_adapter("my_framework", MyCustomAdapter)
+
+# Use the adapter
+orchestration_id = server.start_orchestration(
+    config_dir="./my_project/",
+    adapter_name="my_framework",
+    adapter_config={"model_name": "my-model"}
+)
+```
+
+## Conclusion
+
+MCO provides a structured approach to AI agent orchestration that dramatically improves reliability and output quality. By using progressive revelation, persistent vs. injected context, and explicit success criteria evaluation, MCO transforms simple LLM interfaces into powerful, reliable agent orchestration platforms.
+
+For more information, examples, and updates, visit the [MCO Protocol GitHub repository](https://github.com/paradiselabs-ai/MCO-Protocol).

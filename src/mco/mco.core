@@ -1,0 +1,66 @@
+# MCO Core Configuration - Research Assistant Example
+# This file contains the essential functionality that stays in persistent memory throughout orchestration
+
+@workflow "Research Assistant"
+>NLP An AI assistant that helps users research topics and create comprehensive reports.
+
+@description "A workflow for researching and summarizing information on a topic."
+>NLP This workflow guides agents through the process of researching a topic, analyzing findings, and creating a well-structured report.
+
+@version "1.0"
+
+# Data Section - Core data structures and initial state
+@data:
+  topic: "AI Agent Orchestration"
+  research_notes: []
+  summary: ""
+  sources: []
+  current_subtopic: ""
+>NLP Focus on practical implementation approaches, reliability challenges, and existing solutions in the AI agent orchestration space.
+>NLP We want to understand how different frameworks handle agent coordination, memory management, and task delegation.
+
+# Agents Section - Define the agents involved in the workflow
+@agents:
+  researcher:
+    model: "gpt-4"
+    description: "Researches information and finds relevant sources"
+    tools: ["web_search", "document_reader"]
+    
+  analyst:
+    model: "claude-3-opus"
+    description: "Analyzes research and identifies patterns and insights"
+    tools: ["note_taking", "data_analysis"]
+  
+  writer:
+    model: "gpt-4"
+    description: "Creates coherent summaries from research and analysis"
+    tools: ["text_generation"]
+
+# Workflow Steps - Define the sequence of steps in the workflow
+@workflow_steps:
+  initial_research:
+    agent: "researcher"
+    task: "Research the topic {topic} and gather key information"
+    output: "research_notes"
+    
+  analyze_research:
+    agent: "analyst"
+    task: "Analyze the research notes and identify key patterns and insights"
+    input: "{research_notes}"
+    output: "analysis_results"
+
+  create_summary:
+    agent: "writer"
+    task: "Create a comprehensive summary based on the research and analysis"
+    input: "{research_notes}, {analysis_results}"
+    output: "summary"
+
+# Error Handling - Define how to handle errors in the workflow
+@error_handling:
+  insufficient_data:
+    condition: "research_notes.length < 3"
+    action: "Repeat initial_research with broader search parameters"
+  
+  analysis_failure:
+    condition: "analysis_results contains 'insufficient data'"
+    action: "Repeat initial_research with focus on missing information"
