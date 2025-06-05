@@ -49,7 +49,7 @@ graph TD
         
         MI[Progressive Injection: Secondary Features] -.-> MF
         MI -.-> MG
-        MJ[Progressive Injection: Styles (i.e. UI/UX development)] -.-> MF
+        MJ[Progressive Injection: Styles (such as UI/UX development)] -.-> MF
         MJ -.-> MG
         
         style MA fill:#e1f5fe,stroke:#0277bd,color:#000000
