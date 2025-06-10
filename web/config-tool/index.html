@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCO Configuration Tool</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --accent-color: #9b59b6;
+            --dark-color: #34495e;
+            --light-color: #ecf0f1;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --border-radius: 4px;
+            --box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .logo span {
+            color: var(--accent-color);
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #27ae60;
+        }
+
+        .btn-accent {
+            background-color: var(--accent-color);
+        }
+
+        .btn-accent:hover {
+            background-color: #8e44ad;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+        }
+
+        .sidebar {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+        }
+
+        .sidebar h3 {
+            margin-bottom: 15px;
+            color: var(--dark-color);
+        }
+
+        .template-list {
+            list-style: none;
+        }
+
+        .template-item {
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .template-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .template-item.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .template-item h4 {
+            margin-bottom: 5px;
+        }
+
+        .template-item p {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .editor-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            background-color: #f0f0f0;
+        }
+
+        .tab.active {
+            border-bottom: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 14px;
+        }
+
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .preview-container {
+            margin-top: 20px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .preview-content {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            padding: 15px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .validation-message {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: var(--border-radius);
+            font-size: 14px;
+        }
+
+        .validation-message.error {
+            background-color: #ffebee;
+            color: var(--danger-color);
+            border: 1px solid #ffcdd2;
+        }
+
+        .validation-message.warning {
+            background-color: #fff8e1;
+            color: var(--warning-color);
+            border: 1px solid #ffecb3;
+        }
+
+        .validation-message.success {
+            background-color: #e8f5e9;
+            color: var(--secondary-color);
+            border: 1px solid #c8e6c9;
+        }
+
+        .step-list {
+            list-style: none;
+            margin-bottom: 15px;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            margin-bottom: 5px;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+        }
+
+        .step-item input[type="text"] {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+
+        .step-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .step-actions button {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #777;
+            transition: color 0.2s;
+        }
+
+        .step-actions button:hover {
+            color: var(--primary-color);
+        }
+
+        .add-step {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .add-step button {
+            background-color: transparent;
+            border: 1px dashed #ddd;
+            border-radius: var(--border-radius);
+            padding: 8px 16px;
+            cursor: pointer;
+            color: #777;
+            transition: all 0.2s;
+        }
+
+        .add-step button:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .toggle-nlp {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .toggle-nlp input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .nlp-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .nlp-indicator.active {
+            background-color: var(--secondary-color);
+        }
+
+        .nlp-indicator.inactive {
+            background-color: #ddd;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">MCO <span>Configuration Tool</span></div>
+            <div class="actions">
+                <button class="btn btn-secondary" id="save-btn">Save Project</button>
+                <button class="btn" id="export-btn">Export Files</button>
+                <button class="btn btn-accent" id="deploy-btn">Deploy to Server</button>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <h3>Templates</h3>
+                <ul class="template-list">
+                    <li class="template-item active">
+                        <h4>Research Assistant</h4>
+                        <p>Multi-step research workflows</p>
+                    </li>
+                    <li class="template-item">
+                        <h4>Software Development</h4>
+                        <p>Code generation workflows</p>
+                    </li>
+                    <li class="template-item">
+                        <h4>Content Creation</h4>
+                        <p>Writing and editing workflows</p>
+                    </li>
+                    <li class="template-item">
+                        <h4>Data Analysis</h4>
+                        <p>Data processing workflows</p>
+                    </li>
+                    <li class="template-item">
+                        <h4>Custom</h4>
+                        <p>Start from scratch</p>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="editor-container">
+                <div class="tabs">
+                    <div class="tab active" data-tab="core">mco.core</div>
+                    <div class="tab" data-tab="sc">mco.sc</div>
+                    <div class="tab" data-tab="features">mco.features</div>
+                    <div class="tab" data-tab="styles">mco.styles</div>
+                </div>
+
+                <div class="tab-content active" id="core-tab">
+                    <div class="form-group">
+                        <label for="workflow-name">Workflow Name</label>
+                        <input type="text" id="workflow-name" class="form-control" placeholder="Enter workflow name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="workflow-description">Workflow Description</label>
+                        <textarea id="workflow-description" class="form-control" placeholder="Enter workflow description"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Data Variables</label>
+                        <div id="data-variables">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Variable name" style="width: 30%; display: inline-block; margin-right: 10px;">
+                                <input type="text" class="form-control" placeholder="Default value" style="width: 60%; display: inline-block;">
+                            </div>
+                        </div>
+                        <button class="btn" id="add-variable">Add Variable</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Workflow Steps</label>
+                        <ul class="step-list" id="workflow-steps">
+                            <li class="step-item">
+                                <input type="text" class="form-control" value="Research the topic">
+                                <div class="step-actions">
+                                    <button title="Move up">↑</button>
+                                    <button title="Move down">↓</button>
+                                    <button title="Remove">×</button>
+                                </div>
+                            </li>
+                            <li class="step-item">
+                                <input type="text" class="form-control" value="Analyze findings">
+                                <div class="step-actions">
+                                    <button title="Move up">↑</button>
+                                    <button title="Move down">↓</button>
+                                    <button title="Remove">×</button>
+                                </div>
+                            </li>
+                            <li class="step-item">
+                                <input type="text" class="form-control" value="Create report">
+                                <div class="step-actions">
+                                    <button title="Move up">↑</button>
+                                    <button title="Move down">↓</button>
+                                    <button title="Remove">×</button>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="add-step">
+                            <button id="add-step">+ Add Step</button>
+                        </div>
+                    </div>
+
+                    <div class="toggle-nlp">
+                        <input type="checkbox" id="core-nlp-toggle">
+                        <label for="core-nlp-toggle">Add NLP Context</label>
+                        <span class="nlp-indicator inactive"></span>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="sc-tab">
+                    <div class="form-group">
+                        <label for="goal">Goal</label>
+                        <textarea id="goal" class="form-control" placeholder="Enter the main goal of this workflow"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="target-audience">Target Audience</label>
+                        <input type="text" id="target-audience" class="form-control" placeholder="Who is this workflow for?">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="developer-vision">Developer Vision</label>
+                        <textarea id="developer-vision" class="form-control" placeholder="What is your vision for this workflow?"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Success Criteria</label>
+                        <ul class="step-list" id="success-criteria">
+                            <li class="step-item">
+                                <input type="text" class="form-control" value="Information is accurate and well-sourced">
+                                <div class="step-actions">
+                                    <button title="Move up">↑</button>
+                                    <button title="Move down">↓</button>
+                                    <button title="Remove">×</button>
+                                </div>
+                            </li>
+                            <li class="step-item">
+                                <input type="text" class="form-control" value="Analysis is thorough and insightful">
+                                <div class="step-actions">
+                                    <button title="Move up">↑</button>
+                                    <button title="Move down">↓</button>
+                                    <button title="Remove">×</button>
+                                </div>
+                            </li>
+                            <li class="step-item">
+                                <input type="text" class="form-control" value="Report is well-structured and easy to understand">
+                                <div class="step-actions">
+                                    <button title="Move up">↑</button>
+                                    <button title="Move down">↓</button>
+                                    <button title="Remove">×</button>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="add-step">
+                            <button id="add-criterion">+ Add Criterion</button>
+                        </div>
+                    </div>
+
+                    <div class="toggle-nlp">
+                        <input type="checkbox" id="sc-nlp-toggle">
+                        <label for="sc-nlp-toggle">Add NLP Context</label>
+                        <span class="nlp-indicator inactive"></span>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="features-tab">
+                    <div class="form-group">
+                        <label for="features-description">Features Description</label>
+                        <textarea id="features-description" class="form-control" placeholder="Describe the features of your workflow"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Feature List</label>
+                        <ul class="step-list" id="feature-list">
+                            <li class="step-item">
+                                <input type="text" class="form-control" value="Include data visualizations">
+                                <div class="step-actions">
+                                    <button title="Move up">↑</button>
+                                    <button title="Move down">↓</button>
+                                    <button title="Remove">×</button>
+                                </div>
+                            </li>
+                            <li class="step-item">
+                                <input type="text" class="form-control" value="Add executive summary">
+                                <div class="step-actions">
+                                    <button title="Move up">↑</button>
+                                    <button title="Move down">↓</button>
+                                    <button title="Remove">×</button>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="add-step">
+                            <button id="add-feature">+ Add Feature</button>
+                        </div>
+                    </div>
+
+                    <div class="toggle-nlp">
+                        <input type="checkbox" id="features-nlp-toggle">
+                        <label for="features-nlp-toggle">Add NLP Context</label>
+                        <span class="nlp-indicator inactive"></span>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="styles-tab">
+                    <div class="form-group">
+                        <label for="styles-description">Styles Description</label>
+                        <textarea id="styles-description" class="form-control" placeholder="Describe the styling preferences for your workflow"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Style Guidelines</label>
+                        <ul class="step-list" id="style-list">
+                            <li class="step-item">
+                                <input type="text" class="form-control" value="Use professional tone">
+                                <div class="step-actions">
+                                    <button title="Move up">↑</button>
+                                    <button title="Move down">↓</button>
+                                    <button title="Remove">×</button>
+                                </div>
+                            </li>
+                            <li class="step-item">
+                                <input type="text" class="form-control" value="Include tables for data presentation">
+                                <div class="step-actions">
+                                    <button title="Move up">↑</button>
+                                    <button title="Move down">↓</button>
+                                    <button title="Remove">×</button>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="add-step">
+                            <button id="add-style">+ Add Style Guideline</button>
+                        </div>
+                    </div>
+
+                    <div class="toggle-nlp">
+                        <input type="checkbox" id="styles-nlp-toggle">
+                        <label for="styles-nlp-toggle">Add NLP Context</label>
+                        <span class="nlp-indicator inactive"></span>
+                    </div>
+                </div>
+
+                <div class="preview-container">
+                    <div class="preview-header">
+                        <h3>Preview</h3>
+                        <div>
+                            <button class="btn" id="copy-preview">Copy to Clipboard</button>
+                        </div>
+                    </div>
+                    <div class="preview-content" id="preview">
+// Preview of generated SNLP files will appear here
+// as you edit the form fields above.
+                    </div>
+                    <div class="validation-message success" id="validation-message">
+                        All required fields are filled. SNLP structure is valid.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Template data
+        const templates = {
+            'research': {
+                name: 'Research Assistant',
+                description: 'Multi-step research workflows',
+                default_steps: ['Research the topic', 'Analyze findings', 'Create report'],
+                success_criteria: [
+                    'Information is accurate and well-sourced',
+                    'Analysis is thorough and insightful',
+                    'Report is well-structured and easy to understand'
+                ],
+                features: [
+                    'Include data visualizations',
+                    'Add executive summary'
+                ],
+                styles: [
+                    'Use professional tone',
+                    'Include tables for data presentation'
+                ],
+                sample_data: {
+                    topic: 'AI Agents',
+                    notes: []
+                }
+            },
+            'development': {
+                name: 'Software Development',
+                description: 'Code generation workflows',
+                default_steps: ['Plan architecture', 'Implement core functionality', 'Write tests', 'Document code'],
+                success_criteria: [
+                    'Code is functional and meets requirements',
+                    'Tests cover all critical functionality',
+                    'Documentation is clear and comprehensive'
+                ],
+                features: [
+                    'Use modular architecture',
+                    'Implement error handling'
+                ],
+                styles: [
+                    'Follow language-specific style guide',
+                    'Use consistent naming conventions'
+                ],
+                sample_data: {
+                    project_name: 'MyApp',
+                    language: 'JavaScript'
+                }
+            },
+            'content': {
+                name: 'Content Creation',
+                description: 'Writing and editing workflows',
+                default_steps: ['Research topic', 'Create outline', 'Write draft', 'Edit and finalize'],
+                success_criteria: [
+                    'Content is engaging and well-written',
+                    'Structure is logical and flows well',
+                    'Grammar and spelling are correct'
+                ],
+                features: [
+                    'Include compelling introduction',
+                    'Add call-to-action conclusion'
+                ],
+                styles: [
+                    'Use conversational tone',
+                    'Keep paragraphs short and readable'
+                ],
+                sample_data: {
+                    title: 'How to Write Effective Content',
+                    target_word_count: 1500
+                }
+            },
+            'data': {
+                name: 'Data Analysis',
+                description: 'Data processing workflows',
+                default_steps: ['Collect data', 'Clean and preprocess', 'Analyze patterns', 'Visualize results', 'Create report'],
+                success_criteria: [
+                    'Data is properly cleaned and preprocessed',
+                    'Analysis is statistically sound',
+                    'Visualizations effectively communicate insights'
+                ],
+                features: [
+                    'Use statistical methods',
+                    'Create interactive visualizations'
+                ],
+                styles: [
+                    'Present data in clear tables',
+                    'Use appropriate chart types'
+                ],
+                sample_data: {
+                    dataset: 'sales_data.csv',
+                    analysis_goal: 'Identify sales trends'
+                }
+            },
+            'custom': {
+                name: 'Custom',
+                description: 'Start from scratch',
+                default_steps: ['Step 1', 'Step 2', 'Step 3'],
+                success_criteria: [
+                    'Criterion 1',
+                    'Criterion 2',
+                    'Criterion 3'
+                ],
+                features: [
+                    'Feature 1',
+                    'Feature 2'
+                ],
+                styles: [
+                    'Style guideline 1',
+                    'Style guideline 2'
+                ],
+                sample_data: {}
+            }
+        };
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                tab.classList.add('active');
+                document.getElementById(`${tab.dataset.tab}-tab`).classList.add('active');
+                
+                updatePreview();
+            });
+        });
+
+        // Template selection
+        document.querySelectorAll('.template-item').forEach((item, index) => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.template-item').forEach(t => t.classList.remove('active'));
+                item.classList.add('active');
+                
+                // Apply template data
+                const templateKeys = Object.keys(templates);
+                const selectedTemplate = templates[templateKeys[index]] || templates.custom;
+                
+                applyTemplate(selectedTemplate);
+                updatePreview();
+            });
+        });
+
+        // Apply template data to form
+        function applyTemplate(template) {
+            // Core tab
+            document.getElementById('workflow-name').value = template.name;
+            document.getElementById('workflow-description').value = template.description;
+            
+            // Clear and populate steps
+            const stepsList = document.getElementById('workflow-steps');
+            stepsList.innerHTML = '';
+            template.default_steps.forEach(step => {
+                addListItem(stepsList, step, 'step');
+            });
+            
+            // Success criteria
+            const criteriaList = document.getElementById('success-criteria');
+            criteriaList.innerHTML = '';
+            template.success_criteria.forEach(criterion => {
+                addListItem(criteriaList, criterion, 'criterion');
+            });
+            
+            // Features
+            const featureList = document.getElementById('feature-list');
+            featureList.innerHTML = '';
+            template.features.forEach(feature => {
+                addListItem(featureList, feature, 'feature');
+            });
+            
+            // Styles
+            const styleList = document.getElementById('style-list');
+            styleList.innerHTML = '';
+            template.styles.forEach(style => {
+                addListItem(styleList, style, 'style');
+            });
+        }
+
+        // Add list item helper
+        function addListItem(parentElement, value, type) {
+            const li = document.createElement('li');
+            li.className = 'step-item';
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'form-control';
+            input.value = value;
+            
+            const actions = document.createElement('div');
+            actions.className = 'step-actions';
+            
+            const upBtn = document.createElement('button');
+            upBtn.title = 'Move up';
+            upBtn.textContent = '↑';
+            upBtn.addEventListener('click', () => moveItem(li, 'up'));
+            
+            const downBtn = document.createElement('button');
+            downBtn.title = 'Move down';
+            downBtn.textContent = '↓';
+            downBtn.addEventListener('click', () => moveItem(li, 'down'));
+            
+            const removeBtn = document.createElement('button');
+            removeBtn.title = 'Remove';
+            removeBtn.textContent = '×';
+            removeBtn.addEventListener('click', () => {
+                li.remove();
+                updatePreview();
+            });
+            
+            actions.appendChild(upBtn);
+            actions.appendChild(downBtn);
+            actions.appendChild(removeBtn);
+            
+            li.appendChild(input);
+            li.appendChild(actions);
+            
+            parentElement.appendChild(li);
+            
+            // Add event listener to update preview when input changes
+            input.addEventListener('input', updatePreview);
+        }
+
+        // Move item up or down
+        function moveItem(item, direction) {
+            if (direction === 'up') {
+                if (item.previousElementSibling) {
+                    item.parentNode.insertBefore(item, item.previousElementSibling);
+                }
+            } else if (direction === 'down') {
+                if (item.nextElementSibling) {
+                    item.parentNode.insertBefore(item.nextElementSibling, item);
+                }
+            }
+            updatePreview();
+        }
+
+        // Add new items
+        document.getElementById('add-step').addEventListener('click', () => {
+            addListItem(document.getElementById('workflow-steps'), 'New step', 'step');
+            updatePreview();
+        });
+
+        document.getElementById('add-criterion').addEventListener('click', () => {
+            addListItem(document.getElementById('success-criteria'), 'New criterion', 'criterion');
+            updatePreview();
+        });
+
+        document.getElementById('add-feature').addEventListener('click', () => {
+            addListItem(document.getElementById('feature-list'), 'New feature', 'feature');
+            updatePreview();
+        });
+
+        document.getElementById('add-style').addEventListener('click', () => {
+            addListItem(document.getElementById('style-list'), 'New style guideline', 'style');
+            updatePreview();
+        });
+
+        // NLP toggles
+        document.querySelectorAll('.toggle-nlp input').forEach(toggle => {
+            toggle.addEventListener('change', () => {
+                const indicator = toggle.parentElement.querySelector('.nlp-indicator');
+                if (toggle.checked) {
+                    indicator.classList.remove('inactive');
+                    indicator.classList.add('active');
+                } else {
+                    indicator.classList.remove('active');
+                    indicator.classList.add('inactive');
+                }
+                updatePreview();
+            });
+        });
+
+        // Generate SNLP files
+        function generateSNLP() {
+            const files = {
+                core: generateCoreSNLP(),
+                sc: generateSCSNLP(),
+                features: generateFeaturesSNLP(),
+                styles: generateStylesSNLP()
+            };
+            
+            // Determine which tab is active
+            const activeTab = document.querySelector('.tab.active').dataset.tab;
+            return files[activeTab];
+        }
+
+        function generateCoreSNLP() {
+            const workflowName = document.getElementById('workflow-name').value;
+            const workflowDescription = document.getElementById('workflow-description').value;
+            
+            // Get steps
+            const steps = [];
+            document.querySelectorAll('#workflow-steps .step-item input').forEach(input => {
+                steps.push(input.value);
+            });
+            
+            let snlp = `// MCO Core Configuration\n\n`;
+            snlp += `@workflow "${workflowName}"\n\n`;
+            
+            if (workflowDescription) {
+                snlp += `@description\n${workflowDescription}\n\n`;
+            }
+            
+            // Add data section
+            snlp += `@data\ntopic: "AI Agents"\nnotes: []\n\n`;
+            
+            // Add agents section
+            snlp += `@agents\nresearcher:\n  name: "Researcher"\n  description: "Conducts research and analysis"\n  steps:\n`;
+            steps.forEach(step => {
+                snlp += `    - "${step}"\n`;
+            });
+            
+            // Add NLP context if enabled
+            if (document.getElementById('core-nlp-toggle').checked) {
+                snlp += `\n>NLP\nThis workflow is designed to guide an AI agent through a structured research process.\nThe agent should follow each step carefully, building on the previous steps.\nThe workflow is flexible enough to adapt to different research topics.\n`;
+            }
+            
+            return snlp;
+        }
+
+        function generateSCSNLP() {
+            const goal = document.getElementById('goal').value;
+            const targetAudience = document.getElementById('target-audience').value;
+            const developerVision = document.getElementById('developer-vision').value;
+            
+            // Get success criteria
+            const criteria = [];
+            document.querySelectorAll('#success-criteria .step-item input').forEach(input => {
+                criteria.push(input.value);
+            });
+            
+            let snlp = `// MCO Success Criteria\n\n`;
+            
+            if (goal) {
+                snlp += `@goal\n${goal}\n\n`;
+            }
+            
+            if (targetAudience) {
+                snlp += `@target_audience "${targetAudience}"\n\n`;
+            }
+            
+            if (developerVision) {
+                snlp += `@developer_vision\n${developerVision}\n\n`;
+            }
+            
+            // Add success criteria
+            snlp += `@success_criteria\n`;
+            criteria.forEach(criterion => {
+                snlp += `- "${criterion}"\n`;
+            });
+            
+            // Add NLP context if enabled
+            if (document.getElementById('sc-nlp-toggle').checked) {
+                snlp += `\n>NLP\nThese success criteria define what a successful outcome looks like for this workflow.\nThe agent should evaluate its work against these criteria at each step.\nMeeting all criteria is essential for the workflow to be considered complete.\n`;
+            }
+            
+            return snlp;
+        }
+
+        function generateFeaturesSNLP() {
+            const featuresDescription = document.getElementById('features-description').value;
+            
+            // Get features
+            const features = [];
+            document.querySelectorAll('#feature-list .step-item input').forEach(input => {
+                features.push(input.value);
+            });
+            
+            let snlp = `// MCO Features\n\n`;
+            
+            if (featuresDescription) {
+                snlp += `@description\n${featuresDescription}\n\n`;
+            }
+            
+            // Add features
+            snlp += `@features\n`;
+            features.forEach(feature => {
+                snlp += `- "${feature}"\n`;
+            });
+            
+            // Add NLP context if enabled
+            if (document.getElementById('features-nlp-toggle').checked) {
+                snlp += `\n>NLP\nThese features should be incorporated into the implementation.\nThey represent additional functionality beyond the core requirements.\nImplementing these features will enhance the quality and usefulness of the output.\n`;
+            }
+            
+            return snlp;
+        }
+
+        function generateStylesSNLP() {
+            const stylesDescription = document.getElementById('styles-description').value;
+            
+            // Get styles
+            const styles = [];
+            document.querySelectorAll('#style-list .step-item input').forEach(input => {
+                styles.push(input.value);
+            });
+            
+            let snlp = `// MCO Styles\n\n`;
+            
+            if (stylesDescription) {
+                snlp += `@description\n${stylesDescription}\n\n`;
+            }
+            
+            // Add styles
+            snlp += `@styles\n`;
+            styles.forEach(style => {
+                snlp += `- "${style}"\n`;
+            });
+            
+            // Add NLP context if enabled
+            if (document.getElementById('styles-nlp-toggle').checked) {
+                snlp += `\n>NLP\nThese style guidelines should be applied to the final output.\nThey define the presentation and formatting preferences.\nConsistent application of these styles will ensure a professional and cohesive result.\n`;
+            }
+            
+            return snlp;
+        }
+
+        // Update preview
+        function updatePreview() {
+            const preview = document.getElementById('preview');
+            preview.textContent = generateSNLP();
+            
+            // Validate
+            validateSNLP();
+        }
+
+        // Validate SNLP
+        function validateSNLP() {
+            const validationMessage = document.getElementById('validation-message');
+            const workflowName = document.getElementById('workflow-name').value;
+            const steps = document.querySelectorAll('#workflow-steps .step-item').length;
+            const criteria = document.querySelectorAll('#success-criteria .step-item').length;
+            
+            if (!workflowName) {
+                validationMessage.className = 'validation-message error';
+                validationMessage.textContent = 'Workflow name is required.';
+                return false;
+            }
+            
+            if (steps === 0) {
+                validationMessage.className = 'validation-message error';
+                validationMessage.textContent = 'At least one workflow step is required.';
+                return false;
+            }
+            
+            if (criteria === 0) {
+                validationMessage.className = 'validation-message warning';
+                validationMessage.textContent = 'Success criteria are recommended for effective orchestration.';
+                return true;
+            }
+            
+            validationMessage.className = 'validation-message success';
+            validationMessage.textContent = 'All required fields are filled. SNLP structure is valid.';
+            return true;
+        }
+
+        // Copy to clipboard
+        document.getElementById('copy-preview').addEventListener('click', () => {
+            const preview = document.getElementById('preview');
+            navigator.clipboard.writeText(preview.textContent)
+                .then(() => {
+                    alert('Copied to clipboard!');
+                })
+                .catch(err => {
+                    console.error('Failed to copy: ', err);
+                });
+        });
+
+        // Export files
+        document.getElementById('export-btn').addEventListener('click', () => {
+            if (!validateSNLP()) {
+                alert('Please fix validation errors before exporting.');
+                return;
+            }
+            
+            const files = {
+                'mco.core': generateCoreSNLP(),
+                'mco.sc': generateSCSNLP(),
+                'mco.features': generateFeaturesSNLP(),
+                'mco.styles': generateStylesSNLP()
+            };
+            
+            // In a real implementation, this would create a zip file
+            // For this prototype, we'll just show the files
+            alert('Files ready for export:\n\n' + Object.keys(files).join('\n'));
+        });
+
+        // Initialize preview
+        updatePreview();
+    </script>
+</body>
+</html>

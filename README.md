@@ -1,169 +1,310 @@
-<p align="center">
-<img src="https://img.shields.io/badge/License-MIT-blue.svg" href="https://opensource.org/licenses/MIT" alt="License"/>
-</p>
-<p align="center">
-  <img src="assets/MCO-logo.jpeg" alt="MCO Logo" width="600" height="600"/>
-</p>
+# 🚀 MCO Protocol: The Missing Orchestration Layer for MCP
 
-# MCO Protocol
+<div align="center">
 
-Model Configuration Orchestration (MCO) Server is a lightweight orchestration layer that makes AI agents dramatically more reliable by maintaining core requirements in persistent memory while strategically introducing implementation details at the right moments.
+[![NPM Version](https://img.shields.io/npm/v/@paradiselabs/mco-protocol.svg)](https://www.npmjs.com/package/@paradiselabs/mco-protocol)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Hackathon](https://img.shields.io/badge/🏆-MCP%20Hackathon%202025-gold)](https://huggingface.co/Agents-MCP-Hackathon)
 
-## Features
+**Completing the Agentic Trifecta: MCP + A2P + MCO**
 
-- **Framework Agnostic**: Works with virtually any agentic workflow or framework
-- **Syntactical Natural Language Programming (SNLP)**: Combines structured syntax with natural language for reliable agent guidance
-- **Progressive Revelation**: Strategically introduces features and styles at the right moments in the workflow
-- **Success Criteria Tracking**: Explicitly evaluates progress against defined success criteria
-- **Persistent Memory**: Maintains core requirements throughout the entire process
+*Transform unreliable agents into structured, autonomous workflows with progressive revelation and persistent memory.*
 
-## Why MCO?
+[🎮 **Live Demo**](https://huggingface.co/spaces/paradiselabs/mco-protocol-demo) • [📦 **NPM Package**](https://www.npmjs.com/package/@paradiselabs/mco-protocol) • [📖 **Documentation**](https://github.com/paradiselabs-ai/MCO-Protocol/blob/main/docs)
 
-Traditional agent frameworks often struggle with reliability, determinism, and focus. MCO was created to solve these challenges by introducing a structured approach to agent orchestration that maintains the benefits of natural language while adding the reliability of structured programming. The MCO Protocol is a new standard for reliable, deterministic autonomous agentic orchestration that addresses the challenges of traditional agentic systems through structured workflows and progressive revelation. Think about the complete autonomy of AutoGPT, AgentGPT, etc. - MCO is the missing piece of Agent, Auto, BabyAGI or GPT or anything else. It allows for easily orchestrated robust and reliable results, prevents hallucinations, and provides a progressive feedback loop that builds on itself to iteratively complete the task, or continue is on-going job. Whether giving you a daily news update, checking your stocks, posting on social media, and with the goal of eventually even entireprise-level, complex multi-step, multi-agentic pipelines for industrial/factory autonomy in control systems.
+</div>
 
-
-## Core Concepts
-
-MCO introduces several key innovations:
-
-### Structured Orchestration vs. Traditional Approaches
+## 🌟 The Agentic Trifecta
 
 ```mermaid
-graph TD
-    subgraph Traditional ["Traditional Agent Approach"]
-        TA[Single Prompt] --> TB[Agent]
-        TB --> TC[Result]
-        style TA fill:#f5f5f5,stroke:#333,color:#000000
-        style TB fill:#f5f5f5,stroke:#333,color:#000000
-        style TC fill:#f5f5f5,stroke:#333,color:#000000
+graph TB
+    subgraph "The Foundation of Autonomous AI"
+        MCP[📊 MCP<br/>Model Context Protocol<br/><i>Data Integration</i>]
+        A2P[🤝 A2P<br/>Agent-to-Agent Protocol<br/><i>Communication</i>]
+        MCO[🎛️ MCO<br/>Model Configuration Orchestration<br/><i>Reliable Orchestration</i>]
     end
     
-    subgraph MCO ["MCO Protocol Approach"]
-        MA[Core Definition] --> MB[Persistent Memory]
-        MC[Success Criteria] --> MB
-        MD[Core Features] --> MB
-        MB --> ME[Agent]
-        ME --> MF[Task 1]
-        MF --> MG[Task 2]
-        MG --> MH[Final Result]
-        
-        MI[Progressive Injection: Secondary Features] -.-> MF
-        MI -.-> MG
-        MJ[Progressive Injection: Styles] -.-> MF
-        MJ -.-> MG
-        
-        style MA fill:#e1f5fe,stroke:#0277bd,color:#000000
-        style MB fill:#e8f5e9,stroke:#2e7d32,color:#000000
-        style MC fill:#e1f5fe,stroke:#0277bd,color:#000000
-        style MD fill:#e1f5fe,stroke:#0277bd,color:#000000
-        style ME fill:#fff3e0,stroke:#e65100,color:#000000
-        style MF fill:#f3e5f5,stroke:#6a1b9a,color:#000000
-        style MG fill:#f3e5f5,stroke:#6a1b9a,color:#000000
-        style MH fill:#e8eaf6,stroke:#303f9f,color:#000000
-        style MI fill:#ffebee,stroke:#c62828,color:#000000
-        style MJ fill:#fff8e1,stroke:#ff8f00,color:#000000
+    MCP --> AGENT[🤖 Autonomous Agent]
+    A2P --> AGENT
+    MCO --> AGENT
+    
+    AGENT --> RESULT[✨ Production-Ready<br/>Autonomous AI]
+    
+    style MCO fill:#667eea,stroke:#333,stroke-width:3px,color:#fff
+    style RESULT fill:#2ecc71,stroke:#333,stroke-width:2px,color:#fff
+```
+
+**Why MCO is Essential:**
+- 📊 **MCP** connects agents to data sources → *"What can I access?"*
+- 🤝 **A2P** enables agent communication → *"How do we coordinate?"*  
+- 🎛️ **MCO** ensures reliable execution → *"How do we actually get things done?"*
+
+## 🎯 The Problem MCO Solves
+
+Traditional autonomous agents (AutoGPT, BabyAGI) suffer from:
+- 🔄 **Endless loops** and failed executions
+- 🧠 **Context overload** leading to poor decisions  
+- 🎯 **Lack of focus** on core objectives
+- 📉 **Unpredictable reliability** in production
+
+## 💡 The MCO Solution: Progressive Revelation
+
+```mermaid
+graph LR
+    subgraph "Traditional Approach"
+        T1[Agent] --> T2[Everything at Once<br/>📚 Core + Features + Styles + Context]
+        T2 --> T3[❌ Overwhelmed<br/>Loops & Failures]
     end
+    
+    subgraph "MCO Progressive Revelation"
+        M1[Agent] --> M2[🧠 Persistent Memory<br/>Core + Success Criteria]
+        M2 --> M3[⚡ Step 1: Focus on Core]
+        M3 --> M4[✨ Step 2: + Features Injection]
+        M4 --> M5[🎨 Step 3: + Styles Injection]
+        M5 --> M6[✅ Reliable Completion]
+    end
+    
+    style T3 fill:#e74c3c,color:#fff
+    style M6 fill:#2ecc71,color:#fff
 ```
 
-### Key Components
+## 🛠️ How MCO Works
 
-1. **Persistent vs. Injected Memory**
-   - **Persistent Memory**: Core definitions and success criteria that remain available throughout the entire process
-   - **Progressive Injection**: Features and styles injected at strategic points to guide the agent without overwhelming it
+### SNLP (Syntactic Natural Language Programming)
 
-2. **Syntactic Natural Language Programming (SNLP)**
-   - A new programming language for literally orchestrating AI that blends natural language and structured syntax that makes orchestration both human-readable and machine-parsable
-   - Uses `@data` markers and `> "<NLP>"` directives to structure information
+MCO uses a revolutionary programming language that combines structured syntax with natural language:
 
-3. **Multi-File Structure**
-   - `.core` - Core workflow definition and persistent data
-   - `.sc` - Success criteria for evaluation (also stays persistent) **Shoutout to [Anthropic](https://anthropic.ai) for the inspiration here**
-   - `.features` - Feature specifications injected progressively (optional)
-   - `.styles` - Style guidelines injected progressively (optional, for UI/UX development)
-
-## Getting Started
-
-### Installation (Soon - for now just clone the repo)
-
-```bash
-pip install mco-protocol
-```
-
-### Basic Usage
-
-1. Create your MCO files (and note the use of `> "NLP that adds optional context after each @definition"`):
-
-```
-# mco.core
+```yaml
+# mco.core - Always in persistent memory
 @workflow "Research Assistant"
-@description "A workflow for researching and summarizing information on a topic."
-@version "1.0"
+>NLP An AI assistant that conducts autonomous research with reliability.
 
 @data:
-  topic: "Artificial Intelligence"
-> "Focus on recent developments in AI agents and orchestration." 
+  topic: "AI Agent Orchestration"
+  findings: []
 
 @agents:
   researcher:
-    model: "gpt-4"
-    description: "Researches information and finds relevant sources"
+    steps:
+      - "Research the topic thoroughly"
+      - "Analyze patterns and insights"  
+      - "Create comprehensive report"
+
+# mco.features - Injected at 33% progress
+@feature "Data Visualization"
+>NLP Create charts and graphs when appropriate to enhance understanding.
+
+# mco.styles - Injected at 66% progress  
+@style "Professional Formatting"
+>NLP Use clear headings, bullet points, and executive summary format.
 ```
 
-2. Start the MCO server:
+### Orchestration Flow
+
+```mermaid
+sequenceDiagram
+    participant AF as Agent Framework
+    participant MCO as MCO MCP Server
+    participant SNLP as SNLP Files
+    
+    Note over AF,SNLP: Progressive Revelation in Action
+    
+    AF->>MCO: start_orchestration()
+    MCO->>SNLP: Load mco.core + mco.sc
+    MCO-->>AF: orchestration_id
+    
+    AF->>MCO: get_next_directive()
+    Note right of MCO: Persistent Memory Only
+    MCO-->>AF: Step 1 + Core Context
+    
+    AF->>MCO: complete_step(result)
+    MCO->>MCO: Evaluate against success criteria
+    
+    AF->>MCO: get_next_directive()
+    Note right of MCO: Strategic Injection
+    MCO->>SNLP: Inject mco.features
+    MCO-->>AF: Step 2 + Core + Features
+    
+    AF->>MCO: complete_step(result)
+    
+    AF->>MCO: get_next_directive()
+    MCO->>SNLP: Inject mco.styles  
+    MCO-->>AF: Step 3 + Core + Features + Styles
+    
+    AF->>MCO: complete_step(result)
+    MCO-->>AF: ✅ Workflow Complete
+```
+
+## 🚀 Quick Start
+
+### Installation
+
+```bash
+npm install -g @paradiselabs/mco-protocol
+```
+
+### Create Your First Workflow
+
+```bash
+# Initialize new MCO project
+mco init my-research-assistant
+
+# Opens configuration tool in browser
+# Generates: mco.core, mco.sc, mco.features, mco.styles
+```
+
+### Add to Any MCP-Enabled Framework
+
+```json
+{
+  "mcpServers": {
+    "mco-orchestration": {
+      "command": "npx",
+      "args": ["@paradiselabs/mco-protocol", "--config-dir", "./my-research-assistant"]
+    }
+  }
+}
+```
+
+### Use in Your Agent Framework
 
 ```python
-from mco_server import MCOServer
-
-server = MCOServer()
-server.start_api_server()
+# Works with ANY MCP-enabled framework
+directive = mcp_client.call_tool("get_next_directive")
+result = execute_task(directive.instruction)
+mcp_client.call_tool("complete_step", step_id=directive.step_id, result=result)
 ```
 
-3. Use the MCO client to run an orchestration:
+## 🎭 Live Demo
 
-```python
-from mco_client import MCOClient
+**🎮 [Try the Interactive Demo](https://huggingface.co/spaces/paradiselabs/mco-protocol-demo)**
 
-client = MCOClient()
-orchestration_id = client.start_orchestration(
-    config_dir="./mco_files",
-    adapter_name="lmstudio",
-    adapter_config={"model_name": "llama3"}
-)
+Generate real SNLP configurations and see MCO in action with live MCP server simulation.
+
+## 📊 Architecture Overview
+
+```mermaid
+graph TB
+    subgraph "MCO MCP Server"
+        CLI[🖥️ CLI Interface<br/>mco init, serve, validate]
+        CONFIG[🎛️ Configuration Tool<br/>Web-based SNLP Generator]
+        PARSER[📝 SNLP Parser<br/>@markers + >NLP sections]
+        ENGINE[⚡ Orchestration Engine<br/>Progressive Revelation]
+        MCP[📡 MCP Tool Provider<br/>start_orchestration, get_next_directive]
+    end
+    
+    subgraph "SNLP Files"
+        CORE[🧠 mco.core<br/>Persistent Memory]
+        SC[🎯 mco.sc<br/>Success Criteria]  
+        FEATURES[✨ mco.features<br/>Strategic Injection]
+        STYLES[🎨 mco.styles<br/>Strategic Injection]
+    end
+    
+    subgraph "Agent Frameworks"
+        AUTOGPT[🤖 AutoGPT]
+        CREWAI[👥 CrewAI]
+        LANGGRAPH[🕸️ LangGraph]
+        CUSTOM[⚙️ Custom Agents]
+    end
+    
+    CLI --> CONFIG
+    CONFIG --> CORE & SC & FEATURES & STYLES
+    PARSER --> CORE & SC & FEATURES & STYLES
+    PARSER --> ENGINE
+    ENGINE --> MCP
+    
+    MCP <==> AUTOGPT
+    MCP <==> CREWAI  
+    MCP <==> LANGGRAPH
+    MCP <==> CUSTOM
+    
+    style MCO fill:#667eea,color:#fff
+    style CORE fill:#e8f5e9
+    style SC fill:#e3f2fd
+    style FEATURES fill:#fff3e0
+    style STYLES fill:#fce4ec
 ```
 
-## LM Studio Integration
+## 🏆 Perfect for MCP Hackathon 2025
 
-MCO Protocol works particularly well with LM Studio, transforming its capabilities from a simple chat interface into a powerful, orchestrated agent pipeline. By leveraging MCO's structured approach with LM Studio's Python SDK, you can create reliable, deterministic agent workflows even with less sophisticated base frameworks.
+**Track 1: MCP Server Implementation** ✅
 
-# Learn More Below
+MCO exemplifies the future of MCP by:
+- 🔧 **Extending MCP's Vision**: Making agent orchestration as standardized as data access
+- 🎯 **Solving Real Problems**: Transforming unreliable agents into production-ready systems
+- 🚀 **Ready for Production**: Live NPM package, working implementation
+- 🌟 **Innovative Approach**: First orchestration protocol designed specifically for MCP ecosystem
 
-## Documentation
+## 📈 Before vs After
 
-For detailed documentation, see the [docs](./docs) directory:
+```mermaid
+graph LR
+    subgraph "Before MCO"
+        B1[🤖 Agent] --> B2[❓ Vague Prompts]
+        B2 --> B3[🔄 Loops & Failures]
+        B3 --> B4[😤 Manual Intervention]
+    end
+    
+    subgraph "After MCO"
+        A1[🤖 Agent] --> A2[🎛️ MCO Orchestration]
+        A2 --> A3[📋 Structured Steps]
+        A3 --> A4[✅ Reliable Completion]
+    end
+    
+    style B3 fill:#e74c3c,color:#fff
+    style A4 fill:#2ecc71,color:#fff
+```
 
-- [Integration Examples](./docs/integration_examples.md)
-- [File Types](./docs/file_types.md)
-- [Visual Setup Tool Design](./docs/visual_setup_tool_design.md)
+## 🔗 Available MCP Tools
 
-## Examples
+MCO exposes these tools through the MCP protocol:
 
-The [examples](./examples) directory contains sample MCO configurations for various use cases:
+| Tool | Description | Use Case |
+|------|-------------|----------|
+| `start_orchestration` | Initialize new workflow | Begin autonomous task |
+| `get_next_directive` | Get next step with context | Progressive execution |
+| `complete_step` | Mark step complete | Track progress |
+| `get_workflow_status` | Check progress | Monitoring |
+| `evaluate_against_criteria` | Quality assessment | Success validation |
 
-- [Research Assistant](./examples/research_assistant/)
-- [Product Development](./examples/product_development/) (COMING SOON)
-- [Code Generation](./examples/code_generation/) (COMING SOON)
+## 🎨 CLI Commands
 
-## Contributing
+```bash
+mco init [project-name]     # Create new MCO project
+mco validate [config-dir]   # Validate SNLP files  
+mco serve [config-dir]      # Start MCP server
+mco templates              # List available templates
+```
 
-Contributions are welcome! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
+## 🤝 Contributing
 
-## License
+We welcome contributions! MCO is designed to become the standard for agent orchestration.
 
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## Contact
+## 📜 License
 
-- Website: [https://paradiselabs.co](https://paradiselabs.co)
-- Email: developers@paradiselabs.co
-- Twitter: [@paradiselabs_ai](https://twitter.com/paradiselabs_ai)
-- Discord: [https://discord.gg/uQ69vc4Agc](https://discord.gg/uQ69vc4Agc)
+MIT License - see [LICENSE](LICENSE) file for details.
+
+## 🚀 Join the Revolution
+
+**MCO Protocol is live and ready to transform how you build autonomous agents.**
+
+- 📦 **Install**: `npm install -g @paradiselabs/mco-protocol`
+- 🎮 **Demo**: [Interactive Gradio Space](https://huggingface.co/spaces/paradiselabs/mco-protocol-demo)
+- 💬 **Discord**: [Join our community](https://discord.gg/uQ69vc4Agc)
+- 🐦 **Twitter**: [@paradiselabs_ai](https://twitter.com/paradiselabs_ai)
+
+---
+
+<div align="center">
+
+**🌟 Star this repository if MCO helps you build better agents! 🌟**
+
+*Made with ❤️ by [Paradise Labs](https://paradiselabs.co)*
+
+</div>

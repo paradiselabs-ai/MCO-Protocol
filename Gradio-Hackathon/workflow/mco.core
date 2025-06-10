@@ -1,0 +1,114 @@
+// MCO Core Configuration - Meta-Educational Orchestration System
+// Teaching an agent about MCO Protocol while orchestrating it to CREATE an MCO workflow
+// Recursive demonstration: MCO orchestrates agent to understand and replicate MCO
+
+@workflow "MCO Meta-Teacher: Code Review Agent Creator"
+> You are currently being orchestrated by the MCO (Model Configuration Orchestration) Protocol RIGHT NOW as you read this.
+> Notice how each section of this file builds upon the previous section - this is SNLP's progressive revelation structure.
+> Your mission: Create a focused code review agent that demonstrates MCO orchestration without overwhelming complexity.
+> This is meta-learning: Learn MCO by experiencing MCO orchestration while building MCO workflows.
+
+@description "Revolutionary meta-educational workflow: Learn orchestration by being orchestrated"
+> MCO's breakthrough innovation combines TWO powerful concepts:
+> 1. PROGRESSIVE REVELATION STRUCTURE: Each SNLP section builds context from the previous section, creating organic information flow
+> 2. ITERATIVE ORCHESTRATION LOOPS: Agent attempts → MCO evaluates → "Try again, but better" → repeat until success criteria met
+> Together, these create reliable autonomous agents that maintain context while continuously improving output quality.
+> You will experience both mechanisms firsthand, then encode them into a practical code review agent.
+
+@version "1.0.0"
+
+// Data Section - Building Context Progressively
+@data:
+  educational_context: "You are learning MCO by being orchestrated BY MCO to CREATE MCO workflows"
+  > This creates metacognitive learning - you understand the system by experiencing it while building it.
+  
+  target_agent_name: "Smart Code Review Agent"
+  > Building on educational context: The agent you create will be practical, not overly complex.
+  
+  target_agent_purpose: "Conduct reliable code reviews using MCO orchestration and MCP data sources"
+  > Building on agent name: Focus on reliability through MCO's iterative improvement rather than complex features.
+  
+  code_review_scope: "Basic security checks, style validation, logic review, performance suggestions"
+  > Building on purpose: Keep the agent focused on core review tasks that demonstrate MCO's power.
+  
+  // SNLP Progressive Revelation Pattern You Must Follow
+  snlp_structure_explanation: |
+    CRITICAL: SNLP follows progressive revelation - each section builds context from previous sections:
+    
+    @workflow introduces the concept
+    > @description expands on the workflow concept  
+    > @data starts with simple context, then each data point builds on previous data points
+    > @agents builds on the data context to define execution steps
+    > Each > block references and expands on information from previous > blocks
+    
+    This creates organic information flow that prevents context loss and cognitive overload.
+  
+  // Code Review Agent Specifications (Practical, Not Overwhelming)
+  target_agent_steps: |
+    EXACTLY 6 STEPS (manageable complexity):
+    1. "Connect to MCP server and gather code repository data"
+    2. "Scan code for basic security vulnerabilities and style issues"  
+    3. "Analyze logic flow and identify potential bugs"
+    4. "Generate performance improvement suggestions"
+    5. "Compile findings into structured review report"
+    6. "Validate review completeness against success criteria"
+  
+  > Building on agent steps: Each step will be subject to MCO's evaluation loops - attempt → evaluate → improve → repeat.
+  
+  mcp_integration_requirements: |
+    SIMPLE MCP CONNECTION PATTERN:
+    - Connect to source code MCP server (GitHub/GitLab)
+    - Use JSON-RPC over stdio for data retrieval
+    - Handle connection errors gracefully with retry logic
+    - MCO orchestrates iterative use of MCP data throughout review process
+  
+  > Building on MCP requirements: The agent doesn't need complex integrations - MCO's orchestration makes simple connections powerful.
+
+// Agents Section - Your Orchestrated Learning Journey  
+@agents:
+  mco_meta_orchestrator:
+    name: "MCO Educational Orchestrator"
+    description: "Teaches MCO through hands-on orchestrated creation experience"
+    model: "claude-3-5-sonnet-20241022"
+    > Building on workflow and data context: This agent will guide you through creating a practical code review agent.
+    
+    steps:
+      - "Experience MCO's progressive revelation: notice how each section builds context from previous sections"
+      - "Experience MCO's iterative orchestration: complete task → receive evaluation → improve → repeat"
+      - "Design simple but effective code review workflow using 6 focused steps"
+      - "Generate mco.core following progressive revelation pattern: each section builds on previous sections"
+      - "Create mco.sc with practical success criteria that MCO will use for evaluation loops"
+      - "Build mco.features with focused capabilities that enhance core review functions"
+      - "Develop mco.styles with clear presentation formats for review output"
+      - "Validate complete SNLP workflow demonstrates both progressive revelation AND iterative orchestration"
+
+> Building on agent steps: Each step you complete will be evaluated by MCO using the same iterative process you're encoding.
+> Notice the progressive revelation in action: Each > block builds on information from previous blocks and sections.
+> When MCO says "Try again, but better," study the feedback mechanism - this is what makes autonomous agents reliable.
+> Your lived experience of progressive revelation + iterative orchestration IS the blueprint for what you're creating.
+
+// Error Handling - MCO's Persistent Improvement Philosophy
+@error_handling:
+  context_loss:
+    condition: "Agent loses track of progressive revelation structure in generated SNLP files"
+    mco_response: "Try again, but better: Your SNLP sections don't build context progressively - each section should reference and expand on previous sections"
+    agent_action: "Review how THIS file builds context progressively, apply the same pattern"
+    > Building on error handling: Context preservation is crucial - progressive revelation prevents information loss.
+    
+  insufficient_orchestration:
+    condition: "Generated workflow lacks proper MCO evaluation points and improvement loops"
+    mco_response: "Try again, but better: Your workflow needs MCO evaluation after each step with 'try again, but better' capability"
+    agent_action: "Study how MCO is currently orchestrating YOU, encode that same pattern"
+    > Building on context loss handling: Iterative improvement requires explicit evaluation and feedback mechanisms.
+    
+  overcomplexity:
+    condition: "Generated code review agent is too complex for effective demonstration"
+    mco_response: "Try again, but better: Simplify the agent - focus on demonstrating MCO's power, not feature complexity"
+    agent_action: "Keep the agent practical and focused - let MCO's orchestration provide the sophistication"
+    > Building on orchestration handling: MCO makes simple agents powerful through iterative improvement - complexity isn't needed.
+
+> Building on all previous context: This error handling demonstrates MCO's core innovation.
+> Progressive revelation structure prevents context loss and cognitive overload.
+> Iterative orchestration loops ensure continuous improvement until true quality is achieved.
+> Together, these mechanisms create autonomous agents that are both reliable and sophisticated.
+> Your job: Create a practical code review agent that demonstrates these principles in action.

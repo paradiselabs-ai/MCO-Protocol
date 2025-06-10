@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "mco-orchestration": {
+      "command": "npx", 
+      "args": ["@paradiselabs/mco-protocol", "--config-dir", "./workflow"]
+    }
+  }
+}

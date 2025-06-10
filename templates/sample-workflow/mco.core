@@ -1,0 +1,28 @@
+// MCO Core Configuration
+
+@workflow "Sample Research Workflow"
+
+@description
+This is a sample workflow for demonstrating the MCO MCP Server capabilities.
+It guides an AI agent through a structured research process.
+
+@data
+topic: "AI Agents"
+notes: []
+references: []
+
+@agents
+researcher:
+  name: "Researcher"
+  description: "Conducts research and analysis"
+  steps:
+    - "Research the topic thoroughly"
+    - "Analyze findings and identify patterns"
+    - "Create a comprehensive report"
+    - "Present key insights and recommendations"
+
+>NLP
+This workflow is designed to guide an AI agent through a structured research process.
+The agent should follow each step carefully, building on the previous steps.
+The workflow is flexible enough to adapt to different research topics.
+Focus on gathering comprehensive information and providing insightful analysis.

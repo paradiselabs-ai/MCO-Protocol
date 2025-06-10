@@ -1,0 +1,74 @@
+// MCO Features - Strategic Enhancement Injection
+// Building on mco.core + mco.sc context: Advanced capabilities for focused code review agent creation
+
+@feature "Progressive SNLP Structure Mastery"
+> Building on progressive revelation principles from mco.core: You must master the art of context building in SNLP files.
+> Building on success_criteria_1 from mco.sc: Each section must naturally flow from and expand upon previous sections.
+> When creating the code review agent's SNLP files, start simple and progressively add context:
+> - Begin with basic workflow concept, then expand with detailed description
+> - Start with essential data points, then add context that builds on previous data points  
+> - Define simple agent steps, then add > explanations that reference earlier context
+> This progressive revelation prevents cognitive overload while ensuring comprehensive understanding.
+
+@feature "MCO Orchestration Loop Integration"
+> Building on iterative orchestration concepts from mco.core: The code review agent must include explicit evaluation and improvement mechanisms.
+> Building on success_criteria_2 from mco.sc: Each of the 6 code review steps needs MCO evaluation points.
+> When designing the code review workflow, include:
+> - Clear completion criteria for each step that MCO can evaluate
+> - Explicit "improvement opportunity" checkpoints where MCO can intervene
+> - Feedback mechanisms that allow the agent to incorporate MCO's "try again, but better" guidance
+> - Context preservation between improvement loops so progress isn't lost
+> This creates truly autonomous operation where the agent gets better through orchestration.
+
+@feature "Practical MCP Server Connection Patterns"
+> Building on mcp_integration_requirements from mco.core: Keep connections simple but effective.
+> Building on success_criteria_3 from mco.sc: Avoid complexity that distracts from demonstrating orchestration power.
+> When defining MCP integration for the code review agent:
+> - Use standard JSON-RPC over stdio for repository data access
+> - Include retry logic with exponential backoff for connection reliability
+> - Design graceful degradation when MCP servers are unavailable
+> - Let MCO orchestration handle data processing sophistication, keep connection logic clean
+> Simple connections + smart orchestration = reliable autonomous systems.
+
+@feature "Code Review Domain Focus"
+> Building on target_agent_purpose from mco.core: Create a focused, practical code review agent.
+> Building on code_review_scope from mco.core: Basic security, style, logic, and performance - not overwhelming complexity.
+> When defining the code review agent's capabilities:
+> - Security: Focus on common vulnerabilities (SQL injection, XSS, hardcoded secrets)
+> - Style: Check naming conventions, formatting, documentation completeness
+> - Logic: Identify potential null pointer issues, infinite loops, unreachable code
+> - Performance: Suggest algorithmic improvements, database query optimization
+> Keep each capability focused and practical - let MCO's orchestration provide the sophistication.
+
+// Strategic Injection Timing - When MCO Reveals These Features
+@injection_strategy:
+  trigger_condition: "Agent demonstrates understanding of basic progressive revelation and orchestration concepts"
+  > Building on meta-evaluation from mco.sc: MCO only reveals advanced features when foundational understanding is solid.
+  
+  primary_timing: "During SNLP file generation steps when agent needs enhanced capability guidance"
+  > Building on trigger condition: Features appear when agent is actively creating the code review workflow and needs deeper insights.
+  
+  context_requirement: "Agent must reference and build upon information from mco.core and mco.sc"
+  > Building on primary timing: Features only inject when agent demonstrates progressive revelation understanding.
+  
+  improvement_focus: "When MCO detects agent needs enhanced capability for 'try again, but better' improvement loops"
+  > Building on context requirement: Features provide tools for iterative improvement, not just initial implementation.
+
+// Meta-Learning Guidance for Feature Application
+@meta_application:
+  experience_mapping: "Notice how these features are being revealed to YOU right now as you need enhanced guidance"
+  > This IS strategic injection in action - you're experiencing when and how advanced capabilities appear.
+  
+  pattern_replication: "The code review agent you create should receive features at similar strategic moments"
+  > Building on experience mapping: Replicate the timing and context-sensitivity you're currently experiencing.
+  
+  orchestration_enhancement: "Features should enable better orchestration loop participation, not replace orchestration"
+  > Building on pattern replication: Advanced capabilities support MCO's iterative improvement, they don't bypass it.
+  
+  progressive_sophistication: "Simple agent + strategic feature injection + orchestration loops = powerful autonomous system"
+  > Building on orchestration enhancement: This formula creates reliable autonomy without overwhelming complexity.
+
+> Final feature context building: These capabilities will be strategically revealed when needed during your creation process.
+> Each feature builds on established context while providing specific guidance for implementation challenges.
+> When you design the code review agent's features, follow this same strategic revelation pattern.
+> Remember: Features enhance orchestration capability, they don't replace the need for iterative improvement loops.
