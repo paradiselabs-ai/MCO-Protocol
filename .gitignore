@@ -73,3 +73,6 @@ tmp/
 temp/
 *.tmp
 *.temp
+
+# Internal planning documents
+Gradio-Hackathon/REAL_MCP_IMPLEMENTATION_PLAN.md

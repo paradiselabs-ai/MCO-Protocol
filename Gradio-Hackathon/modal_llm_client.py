@@ -8,8 +8,8 @@ import json
 import requests
 from typing import Dict, Any, Optional, List
 
-# Modal app for LLM inference
-app = modal.App("mco-llm-inference")
+# Connect to existing deployed Modal app
+app = modal.App.lookup("mco-llm-inference", create_if_missing=False)
 
 # Define the image with required dependencies
 image = modal.Image.debian_slim().pip_install([
@@ -106,15 +106,10 @@ class ModalLLMClient:
         self.modal_token = modal_token
         self.app = app
         
-        # Deploy the Modal app
+        # Use existing deployed Modal app (don't redeploy)
         if modal_token:
-            try:
-                self.app.deploy()
-                self.deployed = True
-                print("✅ Modal app deployed successfully")
-            except Exception as e:
-                print(f"❌ Modal deployment failed: {e}")
-                self.deployed = False
+            self.deployed = True
+            print("✅ Using existing deployed Modal app")
         else:
             self.deployed = False
             print("⚠️ No Modal token provided - functions won't work")
