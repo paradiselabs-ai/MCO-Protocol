@@ -1,267 +1,139 @@
 #!/usr/bin/env node
 
 /**
- * MCO MCP Server
+ * MCO MCP Server (stdio implementation)
  * 
- * Main entry point for the MCO MCP Server
+ * Proper MCP server implementation using stdio transport
  * Implements the Model Context Protocol (MCP) for exposing orchestration tools
  */
 
-const express = require('express');
-const http = require('http');
-const WebSocket = require('ws');
-const { program } = require('commander');
 const path = require('path');
-const { SNLPParser } = require('../lib/snlp-parser');
+const fs = require('fs');
+
+// Import MCP SDK with absolute paths
+const { Server } = require(path.join(__dirname, '../node_modules/@modelcontextprotocol/sdk/dist/cjs/server/index.js'));
+const { StdioServerTransport } = require(path.join(__dirname, '../node_modules/@modelcontextprotocol/sdk/dist/cjs/server/stdio.js'));
+const { CallToolRequestSchema, ListToolsRequestSchema } = require(path.join(__dirname, '../node_modules/@modelcontextprotocol/sdk/dist/cjs/types.js'));
+
+// Import MCO components
 const { OrchestrationEngine } = require('../lib/orchestration-engine');
 const { MCPToolProvider } = require('../lib/mcp-tool-provider');
 
-// Parse command-line arguments
-program
-  .option('-p, --port <port>', 'Port to listen on', '3000')
-  .option('-h, --host <host>', 'Host to bind to', 'localhost')
-  .option('-c, --config-dir <dir>', 'Directory containing SNLP files', process.env.MCO_CONFIG_DIR || '.')
-  .option('-v, --verbose', 'Enable verbose logging')
-  .parse(process.argv);
+// Get config directory from environment or current directory
+const configDir = process.env.MCO_CONFIG_DIR || process.cwd();
 
-const options = program.opts();
-
-// Set up logging
-const logLevel = options.verbose ? 'debug' : 'info';
-const logger = {
-  debug: (...args) => {
-    if (logLevel === 'debug') {
-      console.debug(`[DEBUG] ${new Date().toISOString()}:`, ...args);
-    }
-  },
-  info: (...args) => console.info(`[INFO] ${new Date().toISOString()}:`, ...args),
-  warn: (...args) => console.warn(`[WARN] ${new Date().toISOString()}:`, ...args),
-  error: (...args) => console.error(`[ERROR] ${new Date().toISOString()}:`, ...args)
-};
+// Redirect all console output to stderr to keep stdout clean for MCP
+const originalConsole = { ...console };
+console.log = (...args) => originalConsole.error('[MCO]', ...args);
+console.info = (...args) => originalConsole.error('[MCO]', ...args);
+console.warn = (...args) => originalConsole.error('[MCO]', ...args);
+console.error = (...args) => originalConsole.error('[MCO]', ...args);
+console.debug = (...args) => originalConsole.error('[MCO]', ...args);
 
 // Initialize components
-const parser = new SNLPParser();
-parser.setLogger(logger);
 const orchestrationEngine = new OrchestrationEngine();
 const toolProvider = new MCPToolProvider(orchestrationEngine);
 
-// Create Express app
-const app = express();
-app.use(express.json());
+// Create MCP server
+const server = new Server(
+  {
+    name: 'mco-orchestration',
+    version: '0.2.3',
+  },
+  {
+    capabilities: {
+      tools: {},
+    },
+  }
+);
 
-// Set up HTTP server
-const server = http.createServer(app);
-
-// Set up WebSocket server
-const wss = new WebSocket.Server({ noServer: true }); // Use noServer option to attach later
-
-// Client connections
-const clients = new Map();
-
-// Handle WebSocket connections
-wss.on('connection', (ws) => {
-  const clientId = Date.now().toString();
-  clients.set(clientId, { ws, orchestrationId: null });
+// Register tool handlers
+server.setRequestHandler(ListToolsRequestSchema, async () => {
+  console.error('[MCO] Listing tools...');
+  const tools = toolProvider.getToolDefinitions();
+  console.error(`[MCO] Found ${tools.length} tools`);
   
-  logger.info(`Client connected: ${clientId}`);
-  
-  // Send welcome message
-  ws.send(JSON.stringify({
-    type: 'welcome',
-    clientId,
-    message: 'Connected to MCO MCP Server',
-    tools: toolProvider.getToolDefinitions()
-  }));
-  
-  // Handle messages
-  ws.on('message', async (message) => {
-    try {
-      const data = JSON.parse(message);
-      logger.debug(`Received message from client ${clientId}:`, data);
-      
-      // Handle initialization request
-      if (data.type === 'initialize') {
-        logger.info(`Received initialize request from client ${clientId}`);
-        ws.send(JSON.stringify({
-          type: 'initialize_result',
-          success: true,
-          serverInfo: {
-            name: 'MCO MCP Server',
-            version: '0.1.0',
-            capabilities: ['orchestration', 'progressive_revelation']
-          }
-        }));
-        return;
-      }
-      
-      // Handle tool calls
-      if (data.type === 'tool_call') {
-        const { tool, params } = data;
-        
-        // Get client context
-        const client = clients.get(clientId);
-        const context = {
-          clientId,
-          orchestrationId: client.orchestrationId
-        };
-        
-        try {
-          // Execute tool
-          const result = await toolProvider.executeTool(tool, params, context);
-          
-          // Update client orchestration ID if this was a start_orchestration call
-          if (tool === 'start_orchestration' && result.orchestration_id) {
-            client.orchestrationId = result.orchestration_id;
-            clients.set(clientId, client);
-          }
-          
-          // Send result
-          ws.send(JSON.stringify({
-            type: 'tool_result',
-            tool,
-            result
-          }));
-        } catch (error) {
-          logger.error(`Error executing tool ${tool}:`, error);
-          
-          // Send error
-          ws.send(JSON.stringify({
-            type: 'error',
-            tool,
-            error: error.message
-          }));
-        }
-      }
-    } catch (error) {
-      logger.error('Error processing message:', error);
-      
-      // Send error
-      ws.send(JSON.stringify({
-        type: 'error',
-        error: 'Invalid message format'
-      }));
-    }
-  });
-  
-  // Handle disconnections
-  ws.on('close', () => {
-    logger.info(`Client disconnected: ${clientId}`);
-    clients.delete(clientId);
-  });
+  return {
+    tools: tools.map(tool => ({
+      name: tool.name,
+      description: tool.description,
+      inputSchema: tool.parameters
+    }))
+  };
 });
 
-// HTTP routes
-app.get('/', (req, res) => {
-  res.json({
-    name: 'MCO MCP Server',
-    version: '0.1.0',
-    description: 'Model Configuration Orchestration MCP Server',
-    status: 'running'
-  });
-});
-
-// Get available tools
-app.get('/tools', (req, res) => {
-  res.json(toolProvider.getToolDefinitions());
-});
-
-// Normalize config directory path
-const configDir = path.resolve(options.configDir);
-logger.info(`Using configuration directory: ${configDir}`);
-
-// Validate SNLP files before starting server
-async function validateSNLPFiles() {
+server.setRequestHandler(CallToolRequestSchema, async (request) => {
+  const { name, arguments: args } = request.params;
+  
+  console.error(`[MCO] Executing tool: ${name}`);
+  console.error(`[MCO] Arguments:`, args);
+  
   try {
-    logger.info(`Validating SNLP files in ${configDir}...`);
-    await parser.parseDirectory(configDir);
-    logger.info('SNLP files validated successfully');
-    return true;
+    // Create a minimal context for tool execution
+    const context = {
+      clientId: 'mcp-client',
+      orchestrationId: args.orchestration_id || null
+    };
+    
+    const result = await toolProvider.executeTool(name, args, context);
+    
+    console.error(`[MCO] Tool ${name} executed successfully`);
+    
+    return {
+      content: [
+        {
+          type: 'text',
+          text: JSON.stringify(result, null, 2)
+        }
+      ]
+    };
   } catch (error) {
-    logger.error('Failed to validate SNLP files:', error);
-    return false;
+    console.error(`[MCO] Error executing tool ${name}:`, error.message);
+    
+    return {
+      content: [
+        {
+          type: 'text',
+          text: JSON.stringify({
+            error: error.message,
+            tool: name
+          }, null, 2)
+        }
+      ],
+      isError: true
+    };
   }
-}
-
-// Start server with port fallback
-async function startServer() {
-  // Validate SNLP files first
-  const valid = await validateSNLPFiles();
-  if (!valid) {
-    logger.error('Server startup aborted due to invalid SNLP files');
-    process.exit(1);
-  }
-  
-  const host = options.host;
-  const requestedPort = parseInt(options.port, 10);
-  
-  // Define fallback ports (try the requested port first, then try others)
-  const fallbackPorts = [requestedPort, 3001, 3002, 3003, 3004, 3005, 8080, 8081, 8082];
-  
-  // Try each port in sequence
-  for (const port of fallbackPorts) {
-    try {
-      await new Promise((resolve, reject) => {
-        server.once('error', (err) => {
-          if (err.code === 'EADDRINUSE') {
-            logger.warn(`Port ${port} is already in use, trying next port...`);
-            resolve(false);
-          } else {
-            reject(err);
-          }
-        });
-        
-        server.listen(port, host, () => {
-          logger.info(`MCO MCP Server running at http://${host}:${port}`);
-          
-          // Attach WebSocket server after HTTP server is successfully listening
-          server.on('upgrade', (request, socket, head) => {
-            wss.handleUpgrade(request, socket, head, (ws) => {
-              wss.emit('connection', ws, request);
-            });
-          });
-          
-          logger.info(`WebSocket endpoint available at ws://${host}:${port}`);
-          logger.info('Available tools:');
-          toolProvider.getToolDefinitions().forEach(tool => {
-            logger.info(`- ${tool.name}: ${tool.description}`);
-          });
-          
-          resolve(true);
-        });
-      });
-      
-      // If we get here without an error, the server started successfully
-      break;
-    } catch (error) {
-      logger.error(`Failed to start server on port ${port}:`, error);
-      
-      // If this was the last port, exit with error
-      if (port === fallbackPorts[fallbackPorts.length - 1]) {
-        logger.error('All ports are in use, unable to start server');
-        process.exit(1);
-      }
-    }
-  }
-}
+});
 
 // Start the server
-startServer().catch(error => {
-  logger.error('Failed to start server:', error);
-  process.exit(1);
+async function main() {
+  console.error(`[MCO] Starting MCO MCP Server...`);
+  console.error(`[MCO] Using configuration directory: ${configDir}`);
+  
+  // Check if config directory exists
+  if (!fs.existsSync(configDir)) {
+    console.error(`[MCO] Warning: Configuration directory ${configDir} does not exist`);
+  }
+  
+  const transport = new StdioServerTransport();
+  await server.connect(transport);
+  
+  console.error('[MCO] MCO MCP Server started and ready for connections');
+}
+
+// Handle shutdown gracefully
+process.on('SIGINT', () => {
+  console.error('[MCO] Shutting down MCO MCP Server...');
+  process.exit(0);
 });
 
-// Handle server shutdown
-process.on('SIGINT', () => {
-  logger.info('Shutting down MCO MCP Server...');
-  
-  // Close all client connections
-  clients.forEach((client) => {
-    client.ws.close();
-  });
-  
-  // Close server
-  server.close(() => {
-    logger.info('Server stopped');
-    process.exit(0);
-  });
+process.on('SIGTERM', () => {
+  console.error('[MCO] Shutting down MCO MCP Server...');
+  process.exit(0);
+});
+
+// Start the server
+main().catch((error) => {
+  console.error('[MCO] Failed to start server:', error);
+  process.exit(1);
 });

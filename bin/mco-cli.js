@@ -44,14 +44,16 @@ program
       const configToolPath = path.resolve(__dirname, '../web/config-tool/index.html');
       const open = (await import('open')).default;
       await open(configToolPath);
-      
-      console.log(`
+        console.log(`
 MCO project initialized successfully!
 
-To start the MCP server:
+🔧 For MCP Inspector, use:
+  npx @modelcontextprotocol/inspector node "${path.resolve(__dirname, 'mco-mcp-server.js')}"
+
+📋 Or run the MCP server directly:
   mco serve ${projectName}
 
-To validate your SNLP files:
+🧪 To validate your SNLP files:
   mco validate ${projectName}
       `);
     } catch (error) {
@@ -139,8 +141,24 @@ program
   .action(async (configDir, options) => {
     try {
       const resolvedDir = path.resolve(process.cwd(), configDir);
-      
-      console.log(`Starting MCO MCP Server with configuration from ${resolvedDir}...`);
+        console.log(`Starting MCO MCP Server with configuration from ${resolvedDir}...`);
+      console.log('');
+      console.log('🔧 For MCP Inspector, use this command instead:');
+      console.log(`npx @modelcontextprotocol/inspector node "${path.resolve(__dirname, 'mco-mcp-server.js')}"`);
+      console.log('');
+      console.log('📋 Or add this to your MCP client configuration:');
+      console.log(`{
+  "mcpServers": {
+    "mco-orchestration": {
+      "command": "node",
+      "args": ["${path.resolve(__dirname, 'mco-mcp-server.js')}"],
+      "env": {
+        "MCO_CONFIG_DIR": "${resolvedDir}"
+      }
+    }
+  }
+}`);
+      console.log('');
       
       // Check if directory exists
       if (!await fs.pathExists(resolvedDir)) {
@@ -151,11 +169,11 @@ program
       // Set environment variable for config directory
       process.env.MCO_CONFIG_DIR = resolvedDir;
       
-      // Start server
-      const serverPath = path.resolve(__dirname, 'mco-server.js');
-      const server = spawn('node', [serverPath, '--port', options.port, '--host', options.host], {
+      // Start MCP server
+      const serverPath = path.resolve(__dirname, 'mco-mcp-server.js');
+      const server = spawn('node', [serverPath], {
         stdio: 'inherit',
-        env: process.env
+        env: { ...process.env, MCO_CONFIG_DIR: resolvedDir }
       });
       
       // Handle server exit
