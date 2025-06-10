@@ -1,6 +1,6 @@
 {
   "name": "@paradiselabs/mco-protocol",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "MCO (Model Configuration Orchestration) MCP Server & Configuration Tool",
   "main": "lib/index.js",
   "bin": {
