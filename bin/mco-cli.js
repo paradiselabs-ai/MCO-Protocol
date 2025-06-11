@@ -48,7 +48,7 @@ program
 MCO project initialized successfully!
 
 🔧 For MCP Inspector, use:
-  npx @modelcontextprotocol/inspector node "${path.resolve(__dirname, 'mco-mcp-server.js')}"
+  npx @modelcontextprotocol/inspector node "${path.resolve(__dirname, 'mco-server.js')}"
 
 📋 Or run the MCP server directly:
   mco serve ${projectName}
@@ -144,14 +144,14 @@ program
         console.log(`Starting MCO MCP Server with configuration from ${resolvedDir}...`);
       console.log('');
       console.log('🔧 For MCP Inspector, use this command instead:');
-      console.log(`npx @modelcontextprotocol/inspector node "${path.resolve(__dirname, 'mco-mcp-server.js')}"`);
+      console.log(`npx @modelcontextprotocol/inspector node "${path.resolve(__dirname, 'mco-server.js')}"`);
       console.log('');
       console.log('📋 Or add this to your MCP client configuration:');
       console.log(`{
   "mcpServers": {
     "mco-orchestration": {
       "command": "node",
-      "args": ["${path.resolve(__dirname, 'mco-mcp-server.js')}"],
+      "args": ["${path.resolve(__dirname, 'mco-server.js')}"],
       "env": {
         "MCO_CONFIG_DIR": "${resolvedDir}"
       }
@@ -170,7 +170,7 @@ program
       process.env.MCO_CONFIG_DIR = resolvedDir;
       
       // Start MCP server
-      const serverPath = path.resolve(__dirname, 'mco-mcp-server.js');
+      const serverPath = path.resolve(__dirname, 'mco-server.js');
       const server = spawn('node', [serverPath], {
         stdio: 'inherit',
         env: { ...process.env, MCO_CONFIG_DIR: resolvedDir }
