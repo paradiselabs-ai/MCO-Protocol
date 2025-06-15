@@ -160,7 +160,7 @@ mco init my-research-assistant
   "mcpServers": {
     "mco-orchestration": {
       "command": "npx",
-      "args": ["@paradiselabs/mco-protocol", "--config-dir", "./my-research-assistant"]
+      "args": ["@paradiselabs/mco-protocol", "serve", "./mco-config"]
     }
   }
 }
