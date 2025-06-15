@@ -155,12 +155,14 @@ mco init my-research-assistant
 
 ### Add to Any MCP-Enabled Framework
 
+Note: the directory mco-config is the directory which holds the four orchestration files, written in SNLP. This should go in your project directory. thus, the tool is able to be used even for IDE coding agent extensions or integrated coding agents, so long as the root of the current project contains a directory titled "mco-config/" and inside it contains the SNLP orchestration workflow files. 
+
 ```json
 {
   "mcpServers": {
     "mco-orchestration": {
       "command": "npx",
-      "args": ["@paradiselabs/mco-protocol", "--config-dir", "./my-research-assistant"]
+      "args": ["@paradiselabs/mco-protocol", "serve", "./mco-config"]
     }
   }
 }
