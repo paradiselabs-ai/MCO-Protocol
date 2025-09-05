@@ -1,22 +1,31 @@
-// MCO Success Criteria
+# MCO Success Criteria - Research Assistant Example
+# This file defines the success criteria for the research assistant workflow
 
-@goal
-Conduct thorough research on AI agents and create a comprehensive report that provides valuable insights and actionable recommendations.
+@goal "Create comprehensive research reports on user-specified topics"
+>The goal is to produce well-researched, accurate, and insightful reports that meet academic or professional standards.
 
-@target_audience "AI researchers and developers"
+@success_criteria Comprehensive coverage
+>The report should cover multiple aspects of the topic, not just the most obvious ones.
+>At least 3 different perspectives or approaches should be included.
 
-@developer_vision
-This workflow should demonstrate how MCO can guide an AI agent through a complex research task while maintaining focus and producing high-quality output. The progressive revelation approach ensures the agent doesn't get overwhelmed with all requirements at once.
+@success_criteria Multiple sources
+>The report should incorporate information from at least 5 different reputable sources.
+>Sources should include a mix of academic papers, industry reports, and expert opinions.
 
-@success_criteria
-- "Research covers a broad range of relevant sources and perspectives"
-- "Analysis identifies meaningful patterns and insights not obvious from individual sources"
-- "Report is well-structured, clear, and accessible to the target audience"
-- "Recommendations are practical, specific, and supported by the research findings"
-- "All claims are properly sourced and factually accurate"
+@success_criteria Factual accuracy
+>All information provided must be factually accurate and properly attributed.
+>Claims should be supported by evidence from reliable sources.
 
->NLP
-These success criteria define what a successful outcome looks like for this workflow.
-The agent should evaluate its work against these criteria at each step.
-Meeting all criteria is essential for the workflow to be considered complete.
-The goal is to produce research that is not just comprehensive, but also insightful and actionable.
+@success_criteria Logical structure
+>The report should follow a logical structure with clear introduction, body, and conclusion.
+>Information should be organized in a way that builds understanding progressively.
+
+@success_criteria Actionable insights
+>The report should provide actionable insights or recommendations based on the research.
+>These insights should be practical and relevant to the intended audience.
+
+@target_audience "AI engineers and developers working on agent systems"
+>The report should be written for technical professionals who understand AI concepts but may not be experts in agent orchestration specifically.
+
+@developer_vision "Create a tool that helps AI engineers understand complex topics quickly"
+>The research assistant should save engineers time by gathering and synthesizing information that would otherwise take days to collect manually.

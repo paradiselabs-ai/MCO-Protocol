@@ -1,17 +1,33 @@
-// MCO Features
+# MCO Features - Research Assistant Example
+# This file contains optional features that are injected at strategic points in the workflow
 
-@description
-These features should be incorporated into the research workflow to enhance the quality and usefulness of the output.
+@optional Data visualization
+>When appropriate, create charts or graphs to visualize key data points or trends.
+>Use visualization to highlight comparisons, trends over time, or proportional relationships.
+>Consider using bar charts for comparisons, line charts for trends, and pie charts for proportions.
 
-@features
-- "Include data visualizations to represent key findings"
-- "Add an executive summary at the beginning of the report"
-- "Create a section for future research directions"
-- "Include comparative analysis of different approaches"
-- "Provide a glossary of technical terms for accessibility"
+@optional Counterarguments
+>Include a section addressing potential counterarguments or alternative perspectives.
+>Present opposing viewpoints fairly and address their strengths and weaknesses.
+>This adds depth and credibility to the research by showing awareness of different perspectives.
 
->NLP
-These features should be incorporated into the implementation.
-They represent additional functionality beyond the core requirements.
-Implementing these features will enhance the quality and usefulness of the output.
-Consider how each feature can best serve the goal of making the research accessible and actionable.
+@optional Future implications
+>Discuss potential future implications or developments related to the topic.
+>Consider how current trends might evolve and what new challenges or opportunities might emerge.
+>This helps readers understand the longer-term significance of the research.
+
+@optional Case studies
+>Incorporate relevant case studies or examples that illustrate key points.
+>Choose diverse examples that show how concepts apply in different contexts.
+>Provide enough detail for readers to understand the relevance without overwhelming them.
+
+@optional Comparative analysis
+>Include a comparative analysis of different approaches or solutions.
+>Create a structured comparison using consistent criteria across all options.
+>Highlight relative strengths and weaknesses to help readers make informed decisions.
+
+@brainstorm
+>Consider including a section on emerging technologies in the agent orchestration space.
+>Explore the relationship between agent orchestration and other AI fields like reinforcement learning.
+>Investigate how different industries are applying agent orchestration to solve domain-specific problems.
+>Look into the ethical considerations of autonomous agent systems and how orchestration can address them.

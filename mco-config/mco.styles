@@ -1,0 +1,93 @@
+# MCO Wizard - Visual SNLP Generator
+# Styles for the MCO Wizard implementation
+
+@style Modern Minimalist Interface
+>Design the MCO Wizard with a clean, minimalist aesthetic that emphasizes content and functionality. The interface should:
+>
+>1. Use ample white space to create visual breathing room and reduce cognitive load
+>2. Implement a limited, harmonious color palette with 2-3 primary colors and strategic accent colors
+>3. Utilize subtle shadows and elevation to create depth without overwhelming the interface
+>4. Employ consistent, simple iconography that communicates function at a glance
+>5. Use typography that prioritizes readability with a clear hierarchy (no more than 3 font sizes)
+>6. Incorporate subtle animations and transitions that provide feedback without distraction
+>7. Maintain consistent padding, margins, and alignment throughout the application
+>
+>The visual design should feel contemporary and professional while remaining timeless rather than trendy.
+
+@style Intuitive Information Architecture
+>Structure the application's information and navigation to create an intuitive, discoverable experience. The information architecture should:
+>
+>1. Use a clear visual hierarchy that guides users' attention to the most important elements first
+>2. Group related functions and information together with visual containment
+>3. Implement progressive disclosure to reveal complexity only when needed
+>4. Provide clear, consistent navigation patterns that help users maintain context
+>5. Use breadcrumbs and other wayfinding elements to help users understand their location
+>6. Ensure that the interface is scannable with distinct sections and clear headings
+>7. Balance density and breathing room to create a sense of calm focus
+>
+>The goal is to make the application feel intuitive even to first-time users, with each element exactly where users expect to find it.
+
+@style Responsive Fluidity
+>Create a fluid, responsive experience that adapts gracefully to different devices and contexts. The responsive design should:
+>
+>1. Implement a flexible grid system that reorganizes content based on available space
+>2. Ensure touch targets are appropriately sized for both mouse and touch interaction
+>3. Adapt navigation patterns appropriately for different screen sizes
+>4. Maintain readability of text at all viewport sizes without requiring horizontal scrolling
+>5. Use progressive enhancement to provide optimal experiences across device capabilities
+>6. Ensure that all interactive elements provide appropriate feedback across devices
+>7. Test and optimize for both portrait and landscape orientations
+>
+>The application should feel native and comfortable regardless of the device being used.
+
+@style Visual Feedback System
+>Develop a comprehensive visual feedback system that helps users understand the state of the application and their actions. This system should:
+>
+>1. Use color, animation, and iconography to indicate success, warning, and error states
+>2. Provide immediate visual feedback for all user interactions
+>3. Implement progress indicators for operations that take time to complete
+>4. Use subtle animations to draw attention to important changes or updates
+>5. Ensure that all interactive elements have clear hover, focus, and active states
+>6. Use consistent visual patterns to indicate similar types of feedback
+>7. Implement toast notifications for system events that don't require immediate action
+>
+>The feedback system should help users feel confident and in control while using the application.
+
+@style Accessibility-First Design
+>Ensure that the application is accessible to all users by implementing an accessibility-first approach. The accessible design should:
+>
+>1. Maintain sufficient color contrast ratios that exceed WCAG AA standards
+>2. Implement proper semantic HTML structure for screen reader compatibility
+>3. Ensure all interactive elements are keyboard accessible with visible focus states
+>4. Provide text alternatives for all non-text content
+>5. Design forms with clear labels and error messages
+>6. Allow users to customize text size and contrast settings
+>7. Test regularly with assistive technologies to ensure compatibility
+>
+>Accessibility should be treated as a fundamental design principle, not an afterthought.
+
+@style Consistent Component Language
+>Create a cohesive design system with consistent components that create a unified experience. The component language should:
+>
+>1. Establish a library of reusable UI components with consistent behavior and appearance
+>2. Implement consistent interaction patterns across similar components
+>3. Use visual variations systematically to indicate different component states or importance
+>4. Maintain consistent spacing relationships between components
+>5. Ensure that related components share visual characteristics
+>6. Document component usage guidelines to maintain consistency as the application evolves
+>7. Balance variety and consistency to create interest without confusion
+>
+>The component language should make the application feel like a cohesive whole rather than a collection of disparate parts.
+
+@style Delightful Micro-Interactions
+>Incorporate thoughtful micro-interactions that add moments of delight without sacrificing usability. These micro-interactions should:
+>
+>1. Provide subtle animation feedback that reinforces user actions
+>2. Use playful elements sparingly to celebrate achievements or completion
+>3. Implement satisfying transitions between states and pages
+>4. Add personality through small, unexpected details that don't distract from the task
+>5. Use sound (when appropriate and user-enabled) to enhance important feedback
+>6. Ensure that all animations and interactions have purpose beyond decoration
+>7. Allow users to reduce or disable animations if preferred
+>
+>These micro-interactions should make the experience feel polished and considered while adding moments of joy to the workflow creation process.

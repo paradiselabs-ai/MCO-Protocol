@@ -14,10 +14,11 @@ const WebSocket = require('ws');
 const { program } = require('commander');
 const path = require('path');
 const fs = require('fs');
+const { version } = require('../package.json');
 
 // --- Core MCO Logic ---
-const { OrchestrationEngine } = require('./lib/orchestration-engine');
-const { MCPToolProvider } = require('./lib/mcp-tool-provider');
+const { OrchestrationEngine } = require('../lib/orchestration-engine');
+const { MCPToolProvider } = require('../lib/mcp-tool-provider');
 
 // --- Commander Setup ---
 program
@@ -38,8 +39,8 @@ const logger = {
     error: (...args) => console.error(`[ERROR] ${new Date().toISOString()}:`, ...args),
 };
 
-const orchestrationEngine = new OrchestrationEngine(options.configDir, logger);
-const toolProvider = new MCPToolProvider(orchestrationEngine, logger);
+const orchestrationEngine = new OrchestrationEngine();
+const toolProvider = new MCPToolProvider(orchestrationEngine);
 
 // --- Mode Execution ---
 if (options.stdio) {
@@ -57,11 +58,11 @@ async function runStdioMode() {
 
     const { Server } = require('@modelcontextprotocol/sdk/dist/cjs/server');
     const { StdioServerTransport } = require('@modelcontextprotocol/sdk/dist/cjs/server/stdio');
-    const { CallToolRequestSchema, ListToolsRequestSchema } = require('@modelcontextprotocol/sdk/dist/cjs/types');
+    const { CallToolRequestSchema, ListToolsRequestSchema, ListResourcesRequestSchema, ReadResourceRequestSchema } = require('@modelcontextprotocol/sdk/dist/cjs/types');
 
     const server = new Server(
-        { name: 'mco-orchestration', version: '0.3.0' },
-        { capabilities: { tools: {} } }
+        { name: 'mco-orchestration', version },
+        { capabilities: { tools: {}, resources: {} } }
     );
 
     server.setRequestHandler(ListToolsRequestSchema, async () => {
@@ -82,13 +83,72 @@ async function runStdioMode() {
         logger.debug('Arguments:', args);
 
         try {
+            // Provide default config_dir if omitted on start_orchestration
+            if (name === 'start_orchestration') {
+                const dir = options.configDir || process.env.MCO_CONFIG_DIR;
+                if (dir) {
+                    args.config = Object.assign({}, args.config || {}, { config_dir: args.config?.config_dir || dir });
+                }
+            }
             const context = { clientId: 'mcp-client', orchestrationId: args.orchestration_id || null };
             const result = await toolProvider.executeTool(name, args, context);
             logger.info(`Tool ${name} executed successfully.`);
-            return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+            return { content: [{ type: 'json', json: result }] };
         } catch (error) {
             logger.error(`Error executing tool ${name}:`, error.message);
-            return { content: [{ type: 'text', text: JSON.stringify({ error: error.message, tool: name }, null, 2) }], isError: true };
+            return { content: [{ type: 'json', json: { error: error.message, tool: name } }], isError: true };
+        }
+    });
+
+    // Resources: expose SNLP files in the configured directory as readable resources
+    server.setRequestHandler(ListResourcesRequestSchema, async () => {
+        logger.info('Handling ListResources request...');
+        const dir = options.configDir || process.env.MCO_CONFIG_DIR || '.';
+        const candidates = ['mco.core', 'mco.sc', 'mco.features', 'mco.styles'];
+        const resources = [];
+        for (const name of candidates) {
+            const fp = path.resolve(dir, name);
+            if (fs.existsSync(fp) && fs.statSync(fp).isFile()) {
+                const uri = `mco://config/${name}`;
+                resources.push({
+                    uri,
+                    name,
+                    description: `MCO SNLP file ${name} from ${dir}`,
+                    mimeType: 'text/plain'
+                });
+            }
+        }
+        return { resources };
+    });
+
+    server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
+        const { uri } = request.params;
+        logger.info(`Handling ReadResource request for: ${uri}`);
+        try {
+            // Expect mco://config/<filename>
+            const prefix = 'mco://config/';
+            if (!uri.startsWith(prefix)) {
+                throw new Error('Unsupported resource URI');
+            }
+            const filename = uri.slice(prefix.length);
+            const dir = options.configDir || process.env.MCO_CONFIG_DIR || '.';
+            const fp = path.resolve(dir, filename);
+            if (!fs.existsSync(fp) || !fs.statSync(fp).isFile()) {
+                throw new Error('Resource not found');
+            }
+            const text = fs.readFileSync(fp, 'utf8');
+            return {
+                contents: [
+                    {
+                        uri,
+                        mimeType: 'text/plain',
+                        text
+                    }
+                ]
+            };
+        } catch (e) {
+            logger.error('ReadResource error:', e.message);
+            return { contents: [] };
         }
     });
 
@@ -139,6 +199,13 @@ function runHttpMode() {
                     const context = { clientId, orchestrationId: client.orchestrationId };
 
                     try {
+                        // Provide default config_dir if omitted on start_orchestration
+                        if (tool === 'start_orchestration') {
+                            const dir = options.configDir || process.env.MCO_CONFIG_DIR;
+                            if (dir) {
+                                params.config = Object.assign({}, params.config || {}, { config_dir: params.config?.config_dir || dir });
+                            }
+                        }
                         const result = await toolProvider.executeTool(tool, params, context);
                         if (tool === 'start_orchestration' && result.orchestration_id) {
                             client.orchestrationId = result.orchestration_id;
@@ -163,7 +230,7 @@ function runHttpMode() {
     });
 
     app.get('/', (req, res) => {
-        res.json({ name: 'MCO MCP Server', version: '0.3.0', status: 'running' });
+        res.json({ name: 'MCO MCP Server', version, status: 'running' });
     });
 
     app.get('/tools', (req, res) => {

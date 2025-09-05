@@ -1,0 +1,77 @@
+# MCO Wizard - Visual SNLP Generator
+# Core configuration for orchestrating Cascade to build the MCO Wizard
+
+@workflow "Creating a Visual 'MCO workflow' creation tool"
+> This workflow orchestrates the creation of the MCO Wizard, a visual tool for building and managing MCO SNLP files.
+
+@description
+> A visual SNLP generator that allows users to create, customize, and validate MCO workflows through an intuitive, modern interface.
+> The tool supports pre-built templates, community workflows, and building from scratch with real-time validation.
+
+@version "0.0.1"
+
+# Data Section - Core data structures and initial state
+@data:
+  project_description: "A visual SNLP generator that allows users to create, customize, and validate MCO workflows through an intuitive, modern interface. The tool supports pre-built templates, community workflows, and building from scratch with real-time validation. The MCO Wizard tool should be developed with the intention of being able to easily add pre-built and community built workflows, whether by a github integration or other. Whichever the method, a developer guide, and user guide alike should be included, the user-guide as an element that is able to be toggled into view via the UI in the frontend, and the developer guide being a .md file in the projects backend/source codebase."
+  core_functionality: "1. Browse and select from pre-built and community workflows 2. Customize existing workflows by editing values and NLP sections 3. Create new workflows from scratch with guided structure 4. Real-time validation of SNLP syntax and structure 5. Download validated SNLP files individually or as a package 6. Preview how progressive revelation will work in the final workflow"
+  technical_requirements: "1. Frontend: Modern web framework (React/Vue) with responsive design 2. Backend: Real validation using the same logic as the MCO CLI validation tool 3. File handling: Generate and download valid SNLP files 4. Storage: Local storage for user workflows and preferences 5. Integration: API endpoints for future community workflow repository"
+  development_approach: "Build the application incrementally, focusing first on the core SNLP editing experience, then adding workflow management features, and finally implementing the validation and community features. Use component-based architecture for maintainability and extensibility."
+> This data block provides the core context, requirements, and definitions needed for the agent to build the MCO Wizard application.
+
+# Agents Section - Define the agents involved in the workflow
+@agents:
+  Cascade:
+    model: "N/A - Windsurf IDE"
+    description:
+    > You are Cascade, the Windsurf IDE integrated coding agent. You're tasked with creating "MCO Wizard" - a visual SNLP generator that makes creating MCO workflows intuitive and accessible.
+    > You excel at creating clean, modern web interfaces with excellent UX/UI.
+    > You understand the MCO protocol deeply and can implement its validation rules accurately.
+    tools: []
+
+# Workflow Steps Section - The sequence of actions for the workflow
+@workflow_steps:
+  setup_frontend_project:
+    agent: "Cascade"
+    task: "Set up a new React project using Create React App. Install necessary dependencies like styled-components for styling and an icon library."
+    output: "frontend_project_structure"
+
+  design_core_ui_components:
+    agent: "Cascade"
+    task: "Design and implement the core UI components: a file navigator sidebar, a main content editor view, and a validation status bar. Use modern, clean design principles."
+    input: "{frontend_project_structure}"
+    output: "ui_components"
+
+  implement_file_loading:
+    agent: "Cascade"
+    task: "Implement the logic to read the SNLP files from the backend and display their content in the editor view when a file is selected in the navigator."
+    input: "{ui_components}"
+    output: "file_display_logic"
+
+  enable_realtime_editing:
+    agent: "Cascade"
+    task: "Connect the editor view to the application state so that user modifications are tracked in real-time."
+    input: "{file_display_logic}"
+    output: "editing_state_management"
+
+  integrate_validation_engine:
+    agent: "Cascade"
+    task: "Integrate the SNLP validation logic from the backend. As the user types, send the content to the validation engine and display any errors or warnings in the validation status bar."
+    input: "{editing_state_management}"
+    output: "live_validation_feature"
+
+  implement_file_download:
+    agent: "Cascade"
+    task: "Create a feature to allow users to download the currently edited SNLP files, either individually or as a complete package."
+    input: "{live_validation_feature}"
+    output: "download_functionality"
+
+# Error Handling Section - How to manage failures
+@error_handling:
+  syntax_validation_error:
+    condition: "Validation engine returns an error"
+    action: "Display the specific error message and line number to the user in the UI, highlighting the problematic line in the editor."
+
+  file_not_found:
+    condition: "A required SNLP file (mco.core, mco.sc) cannot be loaded from the backend"
+    action: "Display a critical error modal in the UI, preventing further action until the files are available."
+

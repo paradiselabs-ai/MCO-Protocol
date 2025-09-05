@@ -1,18 +1,30 @@
-// MCO Styles
+# MCO Styles - Research Assistant Example
+# This file defines styling preferences that are injected during formatting or presentation steps
 
-@description
-These style guidelines should be applied to the final research report to ensure it is professional, accessible, and effective.
+@style Writing style
+>Use a formal, academic writing style with proper citations and references.
+>Write in clear, concise language that avoids jargon when possible.
+>When technical terms are necessary, define them on first use.
+>Use active voice rather than passive voice when appropriate.
+>Maintain a neutral, objective tone throughout the report.
 
-@styles
-- "Use a professional, academic tone throughout the report"
-- "Include tables for presenting comparative data"
-- "Use bullet points for lists and key takeaways"
-- "Structure the report with clear headings and subheadings"
-- "Include footnotes for additional context where appropriate"
-- "Use consistent formatting for citations and references"
+@style Formatting
+>Use clear headings and subheadings to organize content.
+>Include a table of contents for reports longer than 1000 words.
+>Use bullet points for lists and numbered lists for sequential items or rankings.
+>Keep paragraphs focused on a single idea, typically 3-5 sentences.
+>Include page numbers and section references for longer documents.
 
->NLP
-These style guidelines should be applied to the final output.
-They define the presentation and formatting preferences.
-Consistent application of these styles will ensure a professional and cohesive result.
-The formatting should enhance readability and help the audience quickly find the information they need.
+@style Citations
+>Use APA citation format for all references.
+>Include in-text citations for all factual claims and quoted material.
+>Provide a complete bibliography or references section at the end of the report.
+>For web sources, include access dates and URLs.
+>For academic papers, include DOI when available.
+
+@style Visual elements
+>Keep visual elements clean and minimal with a professional appearance.
+>Use a consistent color scheme for all charts and graphs.
+>Include clear titles and labels for all visual elements.
+>Provide captions that explain the significance of each visual element.
+>Ensure all visual elements are accessible and understandable in both color and black-and-white formats.
